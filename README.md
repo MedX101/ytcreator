@@ -55,7 +55,8 @@ A modern, production-ready SaaS starter template for building full-stack React a
 1. Clone the repository and install dependencies:
 
 ```bash
-npm install
+npm install or npm install --legacy-peer-deps
+
 ```
 
 2. Copy the environment file and configure your credentials:
@@ -102,7 +103,7 @@ npx convex dev
 Start the development server with HMR:
 
 ```bash
-npm run dev
+npm run dev 
 ```
 
 Your application will be available at `http://localhost:5173`.
@@ -126,26 +127,6 @@ This starter kit is optimized for Vercel deployment with the `@vercel/react-rout
 3. Deploy automatically on push to main branch
 
 The `react-router.config.ts` includes the Vercel preset for seamless deployment.
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
 
 ### DIY Deployment
 
