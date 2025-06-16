@@ -38,28 +38,33 @@ export default function RefinePage() {
   const transcriptId = searchParams.get("transcript");
   
   const [selectedTranscriptId, setSelectedTranscriptId] = useState(transcriptId || "");
-  const [inputScript, setInputScript] = useState("");
+  const [selectedScriptId, setSelectedScriptId] = useState("");
+  const [refinementInstructions, setRefinementInstructions] = useState("");
   const [isRefining, setIsRefining] = useState(false);
   const [refinedScript, setRefinedScript] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   const refineScript = useAction(api.youtube.refineScript);
-  const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
+  const analyzeStyle = useAction(api.youtube.analyzeStyle);
   
-  const userTranscripts = useQuery(
-    api.youtube.getUserTranscripts,
-    userId ? { userId } : "skip"
-  );
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts);
+  const userScripts = useQuery(api.youtube.getUserScripts);
+  const styleAnalyses = useQuery(api.youtube.getUserStyleAnalyses);
   
   const selectedTranscript = useQuery(
     api.youtube.getTranscript,
-    selectedTranscriptId ? { transcriptId: selectedTranscriptId as any } : "skip"
+    selectedTranscriptId ? { id: selectedTranscriptId as any } : "skip"
   );
   
-  const styleAnalysis = useQuery(
-    api.youtube.getTranscriptStyleAnalysis,
-    selectedTranscriptId ? { transcriptId: selectedTranscriptId as any } : "skip"
+  const selectedScript = useQuery(
+    api.youtube.getScript,
+    selectedScriptId ? { id: selectedScriptId as any } : "skip"
+  );
+  
+  // Find style analysis for the selected transcript
+  const styleAnalysis = styleAnalyses?.find(
+    analysis => analysis.transcriptId === selectedTranscriptId
   );
 
   useEffect(() => {
@@ -75,7 +80,6 @@ export default function RefinePage() {
     try {
       await analyzeStyle({
         transcriptId: selectedTranscriptId as any,
-        userId,
       });
     } catch (err: any) {
       setError(err.message || "Failed to analyze style");
@@ -83,7 +87,7 @@ export default function RefinePage() {
   };
 
   const handleRefine = async () => {
-    if (!inputScript.trim() || !styleAnalysis?._id || !userId) return;
+    if (!refinementInstructions.trim() || !selectedScriptId || !userId) return;
 
     setIsRefining(true);
     setError("");
@@ -92,13 +96,12 @@ export default function RefinePage() {
 
     try {
       const result = await refineScript({
-        styleAnalysisId: styleAnalysis._id,
-        inputScript: inputScript.trim(),
-        userId,
+        scriptId: selectedScriptId as any,
+        refinementInstructions: refinementInstructions.trim(),
       });
 
-      if (result.success) {
-        setRefinedScript("Script refined successfully! Check your library for the result.");
+      if (result.script) {
+        setRefinedScript(result.script);
         setSuccess(true);
       }
     } catch (err: any) {
@@ -114,7 +117,7 @@ export default function RefinePage() {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target?.result as string;
-        setInputScript(content);
+        setRefinementInstructions(content);
       };
       reader.readAsText(file);
     }
@@ -137,6 +140,7 @@ export default function RefinePage() {
   };
 
   const completedTranscripts = userTranscripts?.filter(t => t.status === 'completed') || [];
+  const availableScripts = userScripts || [];
 
   return (
     <div className="container mx-auto p-6 max-w-4xl space-y-8">
@@ -241,33 +245,96 @@ export default function RefinePage() {
         </CardContent>
       </Card>
 
-      {/* Script Input */}
+      {/* Script Selection */}
       {selectedTranscriptId && (
         <Card>
           <CardHeader>
-            <CardTitle>Your Script to Refine</CardTitle>
+            <CardTitle>Select Script to Refine</CardTitle>
             <CardDescription>
-              Paste your script or upload a text file
+              Choose an existing script to refine with the selected style
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {availableScripts.length === 0 ? (
+              <Alert>
+                <AlertDescription>
+                  No scripts found. Generate a script first to refine it.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="script-select">Script to Refine</Label>
+                <Select
+                  value={selectedScriptId}
+                  onValueChange={setSelectedScriptId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a script to refine" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableScripts.map((script) => (
+                      <SelectItem key={script._id} value={script._id}>
+                        {script.topic || "Untitled Script"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {selectedScript && (
+              <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-medium mb-2">Current Script:</h4>
+                <p className="text-sm text-muted-foreground mb-2">
+                  <span className="font-medium">Topic:</span> {selectedScript.topic}
+                </p>
+                <Textarea
+                  value={selectedScript.content?.substring(0, 300) + "..."}
+                  readOnly
+                  className="text-sm"
+                  rows={3}
+                />
+              </div>
+            )}
+
+            {availableScripts.length === 0 && (
+              <Link to="/dashboard/youtube/generate">
+                <Button className="w-full">
+                  Generate a Script First
+                </Button>
+              </Link>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Refinement Instructions */}
+      {selectedScriptId && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Refinement Instructions</CardTitle>
+            <CardDescription>
+              Describe how you want the script to be refined
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="input-script">Script Content</Label>
+              <Label htmlFor="refinement-instructions">Instructions</Label>
               <Textarea
-                id="input-script"
-                placeholder="Paste your script here..."
-                value={inputScript}
-                onChange={(e) => setInputScript(e.target.value)}
+                id="refinement-instructions"
+                placeholder="e.g., Make it more conversational, add more humor, focus on beginner-friendly language..."
+                value={refinementInstructions}
+                onChange={(e) => setRefinementInstructions(e.target.value)}
                 disabled={isRefining}
-                className="min-h-[300px]"
+                className="min-h-[150px]"
               />
               <p className="text-sm text-muted-foreground">
-                Enter the script you want to transform to match the selected style
+                Provide specific instructions on how you want the script to be improved or modified
               </p>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">Or upload a file:</div>
+              <div className="text-sm text-muted-foreground">Or upload instructions from file:</div>
               <div className="flex items-center gap-2">
                 <input
                   type="file"
@@ -297,14 +364,14 @@ export default function RefinePage() {
               <Alert>
                 <CheckIcon className="w-4 h-4" />
                 <AlertDescription>
-                  Script refined successfully! You can find it in your script library.
+                  Script refined successfully!
                 </AlertDescription>
               </Alert>
             )}
 
             <Button
               onClick={handleRefine}
-              disabled={!inputScript.trim() || isRefining || !styleAnalysis}
+              disabled={!refinementInstructions.trim() || isRefining || !styleAnalysis}
               className="w-full"
               size="lg"
             >
