@@ -14,6 +14,13 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { 
   PenToolIcon, 
@@ -31,23 +38,27 @@ export default function GeneratePage() {
   const [searchParams] = useSearchParams();
   const transcriptId = searchParams.get("transcript");
   
-  const [title, setTitle] = useState("");
+  const [topic, setTopic] = useState("");
+  const [length, setLength] = useState("medium");
+  const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedScript, setGeneratedScript] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
+  const analyzeStyle = useAction(api.youtube.analyzeStyle);
   const generateScript = useAction(api.youtube.generateScript);
   
   const transcript = useQuery(
     api.youtube.getTranscript,
-    transcriptId ? { transcriptId: transcriptId as any } : "skip"
+    transcriptId ? { id: transcriptId as any } : "skip"
   );
   
-  const styleAnalysis = useQuery(
-    api.youtube.getTranscriptStyleAnalysis,
-    transcriptId ? { transcriptId: transcriptId as any } : "skip"
+  const styleAnalyses = useQuery(api.youtube.getUserStyleAnalyses);
+  
+  // Find style analysis for this transcript
+  const styleAnalysis = styleAnalyses?.find(
+    analysis => analysis.transcriptId === transcriptId
   );
 
   useEffect(() => {
@@ -63,7 +74,6 @@ export default function GeneratePage() {
     try {
       await analyzeStyle({
         transcriptId: transcriptId as any,
-        userId,
       });
     } catch (err: any) {
       setError(err.message || "Failed to analyze style");
@@ -71,7 +81,7 @@ export default function GeneratePage() {
   };
 
   const handleGenerate = async () => {
-    if (!title.trim() || !styleAnalysis?._id || !userId) return;
+    if (!topic.trim() || !styleAnalysis?._id || !userId) return;
 
     setIsGenerating(true);
     setError("");
@@ -80,13 +90,14 @@ export default function GeneratePage() {
 
     try {
       const result = await generateScript({
-        styleAnalysisId: styleAnalysis._id,
-        title: title.trim(),
-        userId,
+        analysisId: styleAnalysis._id,
+        topic: topic.trim(),
+        length,
+        additionalInstructions: additionalInstructions || undefined,
       });
 
-      if (result.success) {
-        setGeneratedScript("Script generated successfully! Check your library for the result.");
+      if (result.script) {
+        setGeneratedScript(result.script);
         setSuccess(true);
       }
     } catch (err: any) {
@@ -105,7 +116,7 @@ export default function GeneratePage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title || 'script'}.txt`;
+    a.download = `${topic || 'script'}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -206,22 +217,48 @@ export default function GeneratePage() {
         <CardHeader>
           <CardTitle>Script Generation</CardTitle>
           <CardDescription>
-            Enter a title or topic for your new script
+            Configure your new script
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">Video Title or Topic</Label>
+            <Label htmlFor="topic">Video Topic</Label>
             <Input
-              id="title"
+              id="topic"
               placeholder="e.g., How to Start a YouTube Channel in 2024"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
               disabled={isGenerating || !styleAnalysis}
             />
             <p className="text-sm text-muted-foreground">
-              Provide a clear, descriptive title for the script you want to generate
+              Provide a clear, descriptive topic for the script you want to generate
             </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="length">Script Length</Label>
+            <Select value={length} onValueChange={setLength}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="short">Short (2-3 minutes)</SelectItem>
+                <SelectItem value="medium">Medium (5-8 minutes)</SelectItem>
+                <SelectItem value="long">Long (10-15 minutes)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="instructions">Additional Instructions (Optional)</Label>
+            <Textarea
+              id="instructions"
+              placeholder="Any specific requirements or focus areas..."
+              value={additionalInstructions}
+              onChange={(e) => setAdditionalInstructions(e.target.value)}
+              disabled={isGenerating || !styleAnalysis}
+              rows={3}
+            />
           </div>
 
           {error && (
@@ -234,7 +271,7 @@ export default function GeneratePage() {
             <Alert>
               <CheckIcon className="w-4 h-4" />
               <AlertDescription>
-                Script generated successfully! You can find it in your script library.
+                Script generated successfully!
               </AlertDescription>
             </Alert>
           )}
@@ -250,7 +287,7 @@ export default function GeneratePage() {
 
           <Button
             onClick={handleGenerate}
-            disabled={!title.trim() || isGenerating || !styleAnalysis}
+            disabled={!topic.trim() || isGenerating || !styleAnalysis}
             className="w-full"
             size="lg"
           >
