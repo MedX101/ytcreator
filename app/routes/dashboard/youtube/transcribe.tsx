@@ -50,8 +50,8 @@ export default function TranscribePage() {
       }
 
       const result = await transcribeVideo({
-        youtubeUrl: youtubeUrl.trim(),
-        userId,
+        videoUrl: youtubeUrl.trim(),
+        // title: "Optional title if you have one" // You can add a title input if needed
       });
 
       setTranscriptResult(result);
@@ -68,7 +68,6 @@ export default function TranscribePage() {
     try {
       await analyzeStyle({
         transcriptId: transcriptResult.transcriptId,
-        userId,
       });
       
       // Redirect to generate page
