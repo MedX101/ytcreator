@@ -1,0 +1,367 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+// Function to transcribe YouTube video using Gemini
+export const transcribeVideo = mutation({
+  args: {
+    videoUrl: v.string(),
+    title: v.optional(v.string()),
+  },
+  handler: async (ctx, { videoUrl, title }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      // Use Gemini to analyze the video URL and generate a transcript
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      
+      const prompt = `
+        You are a YouTube video transcription expert. Given a YouTube video URL, 
+        please provide a detailed transcript of the video content. 
+        
+        Video URL: ${videoUrl}
+        
+        Please analyze the video and provide:
+        1. A complete transcript of the spoken content
+        2. Speaker identification if multiple speakers
+        3. Timestamps for major sections
+        4. Any visual elements or text shown in the video
+        
+        Format the response as a clean, readable transcript.
+        
+        Note: If you cannot directly access the video, please provide instructions on how 
+        the user should manually provide the video content for transcription.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const transcript = result.response.text();      // Store the transcript in the database
+      const transcriptId = await ctx.db.insert("transcripts", {
+        userId: identity.subject,
+        youtubeUrl: videoUrl,
+        title: title || "Untitled Video",
+        originalScript: transcript,
+        status: "completed",
+        metadata: { createdAt: Date.now() },
+      });
+
+      return { transcriptId, transcript };
+    } catch (error) {
+      console.error("Error transcribing video:", error);
+      throw new Error("Failed to transcribe video");
+    }
+  },
+});
+
+// Function to analyze video style using Gemini
+export const analyzeStyle = mutation({
+  args: {
+    transcriptId: v.id("transcripts"),
+  },
+  handler: async (ctx, { transcriptId }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      // Get the transcript
+      const transcript = await ctx.db.get(transcriptId);
+      if (!transcript || transcript.userId !== identity.subject) {
+        throw new Error("Transcript not found or unauthorized");
+      }
+
+      // Use Gemini to analyze the style
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      
+      const prompt = `
+        Analyze the following video transcript and provide a detailed style analysis:
+          Transcript:
+        ${transcript.originalScript}
+        
+        Please provide a comprehensive analysis including:
+        1. **Tone and Voice**: Describe the overall tone (casual, professional, enthusiastic, etc.)
+        2. **Language Style**: Vocabulary level, sentence structure, use of jargon
+        3. **Pacing and Flow**: How information is presented and organized
+        4. **Engagement Techniques**: Hooks, questions, calls-to-action used
+        5. **Content Structure**: How the video is organized (intro, main points, conclusion)
+        6. **Unique Characteristics**: Any distinctive style elements or patterns
+        7. **Target Audience**: Who this content seems designed for
+        8. **Key Phrases**: Common expressions or catchphrases used
+        
+        Format this as a structured analysis that could be used to replicate this style.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const analysis = result.response.text();      // Store the style analysis
+      const analysisId = await ctx.db.insert("styleAnalyses", {
+        userId: identity.subject,
+        transcriptId,
+        styleProfile: {
+          hasIntro: false,
+          hasOutro: false,
+          humorTypes: [],
+          toneDescription: "Analysis pending",
+          vocabularyLevel: "intermediate",
+          sentenceStructure: "varied",
+          pacingPattern: "moderate",
+          catchphrases: [],
+          transitionWords: [],
+          addressingStyle: "conversational",
+        },
+        detailedAnalysis: analysis,
+      });
+
+      return { analysisId, analysis };
+    } catch (error) {
+      console.error("Error analyzing style:", error);
+      throw new Error("Failed to analyze style");
+    }
+  },
+});
+
+// Function to generate a script based on style analysis
+export const generateScript = mutation({
+  args: {
+    analysisId: v.id("styleAnalyses"),
+    topic: v.string(),
+    length: v.optional(v.string()),
+    additionalInstructions: v.optional(v.string()),
+  },
+  handler: async (ctx, { analysisId, topic, length = "medium", additionalInstructions }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      // Get the style analysis
+      const styleAnalysis = await ctx.db.get(analysisId);
+      if (!styleAnalysis || styleAnalysis.userId !== identity.subject) {
+        throw new Error("Style analysis not found or unauthorized");
+      }
+
+      // Get the original transcript for additional context
+      const transcript = await ctx.db.get(styleAnalysis.transcriptId);
+      if (!transcript) {
+        throw new Error("Original transcript not found");
+      }
+
+      // Use Gemini to generate the script
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      
+      const prompt = `
+        Create a YouTube video script on the topic "${topic}" using the following style analysis as a guide:
+          Style Analysis:
+        ${styleAnalysis.detailedAnalysis}
+        
+        Original Video Context:
+        Title: ${transcript.title}
+        URL: ${transcript.youtubeUrl}
+        
+        Requirements:
+        - Topic: ${topic}
+        - Length: ${length} (short: 2-3 minutes, medium: 5-8 minutes, long: 10-15 minutes)
+        ${additionalInstructions ? `- Additional Instructions: ${additionalInstructions}` : ''}
+        
+        Please create a complete script that:
+        1. Matches the tone, voice, and style identified in the analysis
+        2. Uses similar engagement techniques and content structure
+        3. Incorporates the language style and pacing patterns
+        4. Includes timestamps for different sections
+        5. Provides clear direction for visual elements or cuts
+        6. Maintains the authentic voice while covering the new topic
+        
+        Format the script with:
+        - [TIMESTAMP] markers
+        - [VISUAL/ACTION] cues
+        - Clear paragraph breaks
+        - Hook, main content, and conclusion sections
+      `;
+
+      const result = await model.generateContent(prompt);
+      const script = result.response.text();      // Store the generated script
+      const scriptId = await ctx.db.insert("generatedScripts", {
+        userId: identity.subject,
+        transcriptId: styleAnalysis.transcriptId,
+        styleAnalysisId: analysisId,
+        type: "generated",
+        inputTitle: topic,
+        inputScript: additionalInstructions || "",
+        outputScript: script,
+        status: "completed",
+        metadata: { 
+          length,
+          createdAt: Date.now(),
+        },
+      });
+
+      return { scriptId, script };
+    } catch (error) {
+      console.error("Error generating script:", error);
+      throw new Error("Failed to generate script");
+    }
+  },
+});
+
+// Function to refine an existing script
+export const refineScript = mutation({
+  args: {
+    scriptId: v.id("generatedScripts"),
+    refinementInstructions: v.string(),
+  },
+  handler: async (ctx, { scriptId, refinementInstructions }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      // Get the script
+      const script = await ctx.db.get(scriptId);
+      if (!script || script.userId !== identity.subject) {
+        throw new Error("Script not found or unauthorized");
+      }
+
+      // Use Gemini to refine the script
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      
+      const prompt = `
+        Please refine the following YouTube script based on these instructions:
+        
+        Refinement Instructions:
+        ${refinementInstructions}
+          Original Script:
+        ${script.outputScript}
+        
+        Please provide an improved version that:
+        1. Addresses the specific refinement requests
+        2. Maintains the original style and structure
+        3. Preserves what's working well
+        4. Enhances clarity, engagement, or flow as requested
+        5. Keeps the same format with timestamps and visual cues
+        
+        Return the complete refined script.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const refinedScript = result.response.text();      // Update the script with the refined version
+      await ctx.db.patch(scriptId, {
+        outputScript: refinedScript,
+        metadata: { lastRefinedAt: Date.now() },
+      });
+
+      return { script: refinedScript };
+    } catch (error) {
+      console.error("Error refining script:", error);
+      throw new Error("Failed to refine script");
+    }
+  },
+});
+
+// Query to get user's transcripts
+export const getUserTranscripts = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("transcripts")
+      .filter((q) => q.eq(q.field("userId"), identity.subject))
+      .order("desc")
+      .collect();
+  },
+});
+
+// Query to get user's style analyses
+export const getUserStyleAnalyses = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("styleAnalyses")
+      .filter((q) => q.eq(q.field("userId"), identity.subject))
+      .order("desc")
+      .collect();
+  },
+});
+
+// Query to get user's generated scripts
+export const getUserScripts = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("generatedScripts")
+      .filter((q) => q.eq(q.field("userId"), identity.subject))
+      .order("desc")
+      .collect();
+  },
+});
+
+// Query to get a specific transcript
+export const getTranscript = query({
+  args: { id: v.id("transcripts") },
+  handler: async (ctx, { id }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+
+    const transcript = await ctx.db.get(id);
+    if (!transcript || transcript.userId !== identity.subject) {
+      return null;
+    }
+
+    return transcript;
+  },
+});
+
+// Query to get a specific style analysis
+export const getStyleAnalysis = query({
+  args: { id: v.id("styleAnalyses") },
+  handler: async (ctx, { id }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+
+    const analysis = await ctx.db.get(id);
+    if (!analysis || analysis.userId !== identity.subject) {
+      return null;
+    }
+
+    return analysis;
+  },
+});
+
+// Query to get a specific script
+export const getScript = query({
+  args: { id: v.id("generatedScripts") },
+  handler: async (ctx, { id }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+
+    const script = await ctx.db.get(id);
+    if (!script || script.userId !== identity.subject) {
+      return null;
+    }
+
+    return script;
+  },
+});

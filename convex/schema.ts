@@ -30,8 +30,7 @@ export default defineSchema({
     customerId: v.optional(v.string()),
   })
     .index("userId", ["userId"])
-    .index("polarId", ["polarId"]),
-  webhookEvents: defineTable({
+    .index("polarId", ["polarId"]),  webhookEvents: defineTable({
     type: v.string(),
     polarEventId: v.string(),
     createdAt: v.string(),
@@ -40,4 +39,49 @@ export default defineSchema({
   })
     .index("type", ["type"])
     .index("polarEventId", ["polarEventId"]),
+  // YouTube Script Transcription Tables
+  transcripts: defineTable({
+    userId: v.string(),
+    youtubeUrl: v.string(),
+    title: v.optional(v.string()),
+    originalScript: v.string(),
+    status: v.string(), // "processing", "completed", "failed"
+    metadata: v.optional(v.any()),
+  })
+    .index("userId", ["userId"])
+    .index("status", ["status"]),
+  styleAnalyses: defineTable({
+    transcriptId: v.id("transcripts"),
+    userId: v.string(),
+    styleProfile: v.object({
+      hasIntro: v.boolean(),
+      hasOutro: v.boolean(),
+      humorTypes: v.array(v.string()),
+      toneDescription: v.string(),
+      vocabularyLevel: v.string(),
+      sentenceStructure: v.string(),
+      pacingPattern: v.string(),
+      catchphrases: v.array(v.string()),
+      transitionWords: v.array(v.string()),
+      addressingStyle: v.string(), // "direct", "conversational", etc.
+    }),
+    detailedAnalysis: v.string(),
+  })
+    .index("transcriptId", ["transcriptId"])
+    .index("userId", ["userId"]),  generatedScripts: defineTable({
+    userId: v.string(),
+    transcriptId: v.optional(v.id("transcripts")),
+    styleAnalysisId: v.optional(v.id("styleAnalyses")),
+    type: v.string(), // "generated" or "refined"
+    inputTitle: v.optional(v.string()),
+    inputScript: v.optional(v.string()),
+    outputScript: v.string(),
+    status: v.string(), // "processing", "completed", "failed"
+    metadata: v.optional(v.any()),
+  })
+    .index("userId", ["userId"])
+    .index("transcriptId", ["transcriptId"])
+    .index("styleAnalysisId", ["styleAnalysisId"])
+    .index("type", ["type"])
+    .index("status", ["status"]),
 });
