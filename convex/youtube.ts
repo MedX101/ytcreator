@@ -1,12 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
+import { api } from "./_generated/api";
 import { v } from "convex/values";
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-// Function to transcribe YouTube video using Gemini
-export const transcribeVideo = mutation({
+// ACTION - Can make external HTTP requests
+export const transcribeVideo = action({
   args: {
     videoUrl: v.string(),
     title: v.optional(v.string()),
@@ -15,15 +16,19 @@ export const transcribeVideo = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
-    }    try {
-      // Use Gemini 1.5 Pro to directly transcribe YouTube video
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    }
+
+    try {
+      // Use Gemini 2.0 Flash (as shown in your error)
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
       
       const prompt = `Please provide a detailed transcript of this YouTube video. Include:
 1. Complete spoken content with speaker identification if multiple speakers
 2. Timestamps for major sections  
 3. Any important visual elements or text shown in the video
-4. Format as a clean, readable transcript`;      const result = await model.generateContent([
+4. Format as a clean, readable transcript`;
+
+      const result = await model.generateContent([
         prompt,
         {
           fileData: {
@@ -33,26 +38,46 @@ export const transcribeVideo = mutation({
         },
       ]);
       
-      const transcript = result.response.text();// Store the transcript in the database
-      const transcriptId = await ctx.db.insert("transcripts", {
+      const transcript = result.response.text();
+
+      // Store the transcript in the database using a mutation
+      const transcriptId = await ctx.runMutation(api.youtube.storeTranscript, {
         userId: identity.subject,
         youtubeUrl: videoUrl,
         title: title || "Untitled Video",
         originalScript: transcript,
-        status: "completed",
-        metadata: { createdAt: Date.now() },
       });
 
       return { transcriptId, transcript };
     } catch (error) {
       console.error("Error transcribing video:", error);
-      throw new Error("Failed to transcribe video");
+      throw new Error(`Transcription failed: ${error}`);
     }
   },
 });
 
-// Function to analyze video style using Gemini
-export const analyzeStyle = mutation({
+// Helper mutation to store transcript (called from action)
+export const storeTranscript = mutation({
+  args: {
+    userId: v.string(),
+    youtubeUrl: v.string(),
+    title: v.string(),
+    originalScript: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("transcripts", {
+      userId: args.userId,
+      youtubeUrl: args.youtubeUrl,
+      title: args.title,
+      originalScript: args.originalScript,
+      status: "completed",
+      metadata: { createdAt: Date.now() },
+    });
+  },
+});
+
+// ACTION - Makes external API calls
+export const analyzeStyle = action({
   args: {
     transcriptId: v.id("transcripts"),
   },
@@ -63,8 +88,8 @@ export const analyzeStyle = mutation({
     }
 
     try {
-      // Get the transcript
-      const transcript = await ctx.db.get(transcriptId);
+      // Get the transcript using a query
+      const transcript = await ctx.runQuery(api.youtube.getTranscript, { id: transcriptId });
       if (!transcript || transcript.userId !== identity.subject) {
         throw new Error("Transcript not found or unauthorized");
       }
@@ -74,7 +99,8 @@ export const analyzeStyle = mutation({
       
       const prompt = `
         Analyze the following video transcript and provide a detailed style analysis:
-          Transcript:
+        
+        Transcript:
         ${transcript.originalScript}
         
         Please provide a comprehensive analysis including:
@@ -91,23 +117,13 @@ export const analyzeStyle = mutation({
       `;
 
       const result = await model.generateContent(prompt);
-      const analysis = result.response.text();      // Store the style analysis
-      const analysisId = await ctx.db.insert("styleAnalyses", {
+      const analysis = result.response.text();
+
+      // Store the style analysis using a mutation
+      const analysisId = await ctx.runMutation(api.youtube.storeStyleAnalysis, {
         userId: identity.subject,
         transcriptId,
-        styleProfile: {
-          hasIntro: false,
-          hasOutro: false,
-          humorTypes: [],
-          toneDescription: "Analysis pending",
-          vocabularyLevel: "intermediate",
-          sentenceStructure: "varied",
-          pacingPattern: "moderate",
-          catchphrases: [],
-          transitionWords: [],
-          addressingStyle: "conversational",
-        },
-        detailedAnalysis: analysis,
+        analysis,
       });
 
       return { analysisId, analysis };
@@ -118,8 +134,36 @@ export const analyzeStyle = mutation({
   },
 });
 
-// Function to generate a script based on style analysis
-export const generateScript = mutation({
+// Helper mutation to store style analysis
+export const storeStyleAnalysis = mutation({
+  args: {
+    userId: v.string(),
+    transcriptId: v.id("transcripts"),
+    analysis: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("styleAnalyses", {
+      userId: args.userId,
+      transcriptId: args.transcriptId,
+      styleProfile: {
+        hasIntro: false,
+        hasOutro: false,
+        humorTypes: [],
+        toneDescription: "Analysis pending",
+        vocabularyLevel: "intermediate",
+        sentenceStructure: "varied",
+        pacingPattern: "moderate",
+        catchphrases: [],
+        transitionWords: [],
+        addressingStyle: "conversational",
+      },
+      detailedAnalysis: args.analysis,
+    });
+  },
+});
+
+// ACTION - Makes external API calls
+export const generateScript = action({
   args: {
     analysisId: v.id("styleAnalyses"),
     topic: v.string(),
@@ -133,14 +177,14 @@ export const generateScript = mutation({
     }
 
     try {
-      // Get the style analysis
-      const styleAnalysis = await ctx.db.get(analysisId);
+      // Get the style analysis using a query
+      const styleAnalysis = await ctx.runQuery(api.youtube.getStyleAnalysis, { id: analysisId });
       if (!styleAnalysis || styleAnalysis.userId !== identity.subject) {
         throw new Error("Style analysis not found or unauthorized");
       }
 
       // Get the original transcript for additional context
-      const transcript = await ctx.db.get(styleAnalysis.transcriptId);
+      const transcript = await ctx.runQuery(api.youtube.getTranscript, { id: styleAnalysis.transcriptId });
       if (!transcript) {
         throw new Error("Original transcript not found");
       }
@@ -150,7 +194,8 @@ export const generateScript = mutation({
       
       const prompt = `
         Create a YouTube video script on the topic "${topic}" using the following style analysis as a guide:
-          Style Analysis:
+        
+        Style Analysis:
         ${styleAnalysis.detailedAnalysis}
         
         Original Video Context:
@@ -178,20 +223,17 @@ export const generateScript = mutation({
       `;
 
       const result = await model.generateContent(prompt);
-      const script = result.response.text();      // Store the generated script
-      const scriptId = await ctx.db.insert("generatedScripts", {
+      const script = result.response.text();
+
+      // Store the generated script using a mutation
+      const scriptId = await ctx.runMutation(api.youtube.storeGeneratedScript, {
         userId: identity.subject,
         transcriptId: styleAnalysis.transcriptId,
         styleAnalysisId: analysisId,
-        type: "generated",
-        inputTitle: topic,
-        inputScript: additionalInstructions || "",
-        outputScript: script,
-        status: "completed",
-        metadata: { 
-          length,
-          createdAt: Date.now(),
-        },
+        topic,
+        script,
+        additionalInstructions: additionalInstructions || "",
+        length,
       });
 
       return { scriptId, script };
@@ -202,8 +244,37 @@ export const generateScript = mutation({
   },
 });
 
-// Function to refine an existing script
-export const refineScript = mutation({
+// Helper mutation to store generated script
+export const storeGeneratedScript = mutation({
+  args: {
+    userId: v.string(),
+    transcriptId: v.id("transcripts"),
+    styleAnalysisId: v.id("styleAnalyses"),
+    topic: v.string(),
+    script: v.string(),
+    additionalInstructions: v.string(),
+    length: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("generatedScripts", {
+      userId: args.userId,
+      transcriptId: args.transcriptId,
+      styleAnalysisId: args.styleAnalysisId,
+      type: "generated",
+      inputTitle: args.topic,
+      inputScript: args.additionalInstructions,
+      outputScript: args.script,
+      status: "completed",
+      metadata: { 
+        length: args.length,
+        createdAt: Date.now(),
+      },
+    });
+  },
+});
+
+// ACTION - Makes external API calls
+export const refineScript = action({
   args: {
     scriptId: v.id("generatedScripts"),
     refinementInstructions: v.string(),
@@ -215,8 +286,8 @@ export const refineScript = mutation({
     }
 
     try {
-      // Get the script
-      const script = await ctx.db.get(scriptId);
+      // Get the script using a query
+      const script = await ctx.runQuery(api.youtube.getScript, { id: scriptId });
       if (!script || script.userId !== identity.subject) {
         throw new Error("Script not found or unauthorized");
       }
@@ -229,7 +300,8 @@ export const refineScript = mutation({
         
         Refinement Instructions:
         ${refinementInstructions}
-          Original Script:
+        
+        Original Script:
         ${script.outputScript}
         
         Please provide an improved version that:
@@ -243,10 +315,12 @@ export const refineScript = mutation({
       `;
 
       const result = await model.generateContent(prompt);
-      const refinedScript = result.response.text();      // Update the script with the refined version
-      await ctx.db.patch(scriptId, {
-        outputScript: refinedScript,
-        metadata: { lastRefinedAt: Date.now() },
+      const refinedScript = result.response.text();
+
+      // Update the script using a mutation
+      await ctx.runMutation(api.youtube.updateScript, {
+        scriptId,
+        refinedScript,
       });
 
       return { script: refinedScript };
@@ -254,6 +328,20 @@ export const refineScript = mutation({
       console.error("Error refining script:", error);
       throw new Error("Failed to refine script");
     }
+  },
+});
+
+// Helper mutation to update script
+export const updateScript = mutation({
+  args: {
+    scriptId: v.id("generatedScripts"),
+    refinedScript: v.string(),
+  },
+  handler: async (ctx, { scriptId, refinedScript }) => {
+    await ctx.db.patch(scriptId, {
+      outputScript: refinedScript,
+      metadata: { lastRefinedAt: Date.now() },
+    });
   },
 });
 
