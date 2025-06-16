@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@clerk/react-router";
-import { useAction, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -31,12 +31,9 @@ export default function TranscribePage() {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptResult, setTranscriptResult] = useState<any>(null);
   const [error, setError] = useState("");
-
-  const transcribeVideo = useAction(api.youtube.transcribeYouTubeVideo);
-  const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
-  const userTranscripts = useQuery(api.youtube.getUserTranscripts, 
-    userId ? { userId } : "skip"
-  );
+  const transcribeVideo = useMutation(api.youtube.transcribeVideo);
+  const analyzeStyle = useMutation(api.youtube.analyzeStyle);
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts);
 
   const handleTranscribe = async () => {
     if (!youtubeUrl.trim() || !userId) return;
@@ -190,7 +187,7 @@ export default function TranscribePage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentTranscripts.map((transcript) => (
+              {recentTranscripts.map((transcript: any) => (
                 <div
                   key={transcript._id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"

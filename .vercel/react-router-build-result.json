@@ -18,7 +18,12 @@
       "routes/subscription-required": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/chat": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
-      "routes/dashboard/settings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+      "routes/dashboard/settings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/youtube": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/youtube/transcribe": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/youtube/generate": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/youtube/refine": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/youtube/library": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
     },
     "routes": {
       "root": {
@@ -113,13 +118,58 @@
         "config": {
           "runtime": "nodejs"
         }
+      },
+      "routes/dashboard/youtube": {
+        "id": "routes/dashboard/youtube",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/youtube.tsx",
+        "path": "dashboard/youtube",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/youtube/transcribe": {
+        "id": "routes/dashboard/youtube/transcribe",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/youtube/transcribe.tsx",
+        "path": "dashboard/youtube/transcribe",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/youtube/generate": {
+        "id": "routes/dashboard/youtube/generate",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/youtube/generate.tsx",
+        "path": "dashboard/youtube/generate",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/youtube/refine": {
+        "id": "routes/dashboard/youtube/refine",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/youtube/refine.tsx",
+        "path": "dashboard/youtube/refine",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/youtube/library": {
+        "id": "routes/dashboard/youtube/library",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/youtube/library.tsx",
+        "path": "dashboard/youtube/library",
+        "config": {
+          "runtime": "nodejs"
+        }
       }
     }
   },
   "reactRouterConfig": {
-    "appDirectory": "/Users/michaelshimeles/Desktop/rsk/app",
+    "appDirectory": "C:/Users/MedX/Desktop/ytcreator/app",
     "basename": "/",
-    "buildDirectory": "/Users/michaelshimeles/Desktop/rsk/build",
+    "buildDirectory": "C:/Users/MedX/Desktop/ytcreator/build",
     "future": {
       "unstable_middleware": false,
       "unstable_optimizeDeps": false,
@@ -191,6 +241,36 @@
         "parentId": "routes/dashboard/layout",
         "file": "routes/dashboard/settings.tsx",
         "path": "dashboard/settings"
+      },
+      "routes/dashboard/youtube": {
+        "id": "routes/dashboard/youtube",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/youtube.tsx",
+        "path": "dashboard/youtube"
+      },
+      "routes/dashboard/youtube/transcribe": {
+        "id": "routes/dashboard/youtube/transcribe",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/youtube/transcribe.tsx",
+        "path": "dashboard/youtube/transcribe"
+      },
+      "routes/dashboard/youtube/generate": {
+        "id": "routes/dashboard/youtube/generate",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/youtube/generate.tsx",
+        "path": "dashboard/youtube/generate"
+      },
+      "routes/dashboard/youtube/refine": {
+        "id": "routes/dashboard/youtube/refine",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/youtube/refine.tsx",
+        "path": "dashboard/youtube/refine"
+      },
+      "routes/dashboard/youtube/library": {
+        "id": "routes/dashboard/youtube/library",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/youtube/library.tsx",
+        "path": "dashboard/youtube/library"
       }
     },
     "routeDiscovery": {
