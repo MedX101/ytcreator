@@ -136,7 +136,7 @@ export default function RefinePage() {
     URL.revokeObjectURL(url);
   };
 
-  const completedTranscripts = userTranscripts?.filter((t: any) => t.status === 'completed') || [];
+  const completedTranscripts = userTranscripts?.filter(t => t.status === 'completed') || [];
 
   return (
     <div className="container mx-auto p-6 max-w-4xl space-y-8">
@@ -187,7 +187,7 @@ export default function RefinePage() {
                   <SelectValue placeholder="Select a transcribed video for style reference" />
                 </SelectTrigger>
                 <SelectContent>
-                  {completedTranscripts.map((transcript: any) => (
+                  {completedTranscripts.map((transcript) => (
                     <SelectItem key={transcript._id} value={transcript._id}>
                       {transcript.title || "Untitled Video"}
                     </SelectItem>

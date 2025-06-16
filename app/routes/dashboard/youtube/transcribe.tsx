@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@clerk/react-router";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -31,9 +31,12 @@ export default function TranscribePage() {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptResult, setTranscriptResult] = useState<any>(null);
   const [error, setError] = useState("");
-  const transcribeVideo = useMutation(api.youtube.transcribeVideo);
-  const analyzeStyle = useMutation(api.youtube.analyzeStyle);
-  const userTranscripts = useQuery(api.youtube.getUserTranscripts);
+
+  const transcribeVideo = useAction(api.youtube.transcribeYouTubeVideo);
+  const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts, 
+    userId ? { userId } : "skip"
+  );
 
   const handleTranscribe = async () => {
     if (!youtubeUrl.trim() || !userId) return;
@@ -50,8 +53,8 @@ export default function TranscribePage() {
       }
 
       const result = await transcribeVideo({
-        videoUrl: youtubeUrl.trim(),
-        // title: "Optional title if you have one" // You can add a title input if needed
+        youtubeUrl: youtubeUrl.trim(),
+        userId,
       });
 
       setTranscriptResult(result);
@@ -68,6 +71,7 @@ export default function TranscribePage() {
     try {
       await analyzeStyle({
         transcriptId: transcriptResult.transcriptId,
+        userId,
       });
       
       // Redirect to generate page
@@ -186,7 +190,7 @@ export default function TranscribePage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentTranscripts.map((transcript: any) => (
+              {recentTranscripts.map((transcript) => (
                 <div
                   key={transcript._id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"

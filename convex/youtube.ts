@@ -15,32 +15,25 @@ export const transcribeVideo = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
-    }
-
-    try {
-      // Use Gemini to analyze the video URL and generate a transcript
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    }    try {
+      // Use Gemini 1.5 Pro to directly transcribe YouTube video
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       
-      const prompt = `
-        You are a YouTube video transcription expert. Given a YouTube video URL, 
-        please provide a detailed transcript of the video content. 
-        
-        Video URL: ${videoUrl}
-        
-        Please analyze the video and provide:
-        1. A complete transcript of the spoken content
-        2. Speaker identification if multiple speakers
-        3. Timestamps for major sections
-        4. Any visual elements or text shown in the video
-        
-        Format the response as a clean, readable transcript.
-        
-        Note: If you cannot directly access the video, please provide instructions on how 
-        the user should manually provide the video content for transcription.
-      `;
-
-      const result = await model.generateContent(prompt);
-      const transcript = result.response.text();      // Store the transcript in the database
+      const prompt = `Please provide a detailed transcript of this YouTube video. Include:
+1. Complete spoken content with speaker identification if multiple speakers
+2. Timestamps for major sections  
+3. Any important visual elements or text shown in the video
+4. Format as a clean, readable transcript`;      const result = await model.generateContent([
+        prompt,
+        {
+          fileData: {
+            fileUri: videoUrl,
+            mimeType: "video/*",
+          },
+        },
+      ]);
+      
+      const transcript = result.response.text();// Store the transcript in the database
       const transcriptId = await ctx.db.insert("transcripts", {
         userId: identity.subject,
         youtubeUrl: videoUrl,

@@ -35,9 +35,16 @@ import { api } from "../../../../convex/_generated/api";
 export default function LibraryPage() {
   const { userId } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-    const userTranscripts = useQuery(api.youtube.getUserTranscripts);
   
-  const userScripts = useQuery(api.youtube.getUserScripts);
+  const userTranscripts = useQuery(
+    api.youtube.getUserTranscripts,
+    userId ? { userId } : "skip"
+  );
+  
+  const userScripts = useQuery(
+    api.youtube.getUserGeneratedScripts,
+    userId ? { userId } : "skip"
+  );
 
   if (!userId) {
     return (
@@ -46,12 +53,13 @@ export default function LibraryPage() {
       </div>
     );
   }
-  const filteredTranscripts = userTranscripts?.filter((transcript: any) =>
+
+  const filteredTranscripts = userTranscripts?.filter(transcript =>
     transcript.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     transcript.youtubeUrl.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  const filteredScripts = userScripts?.filter((script: any) =>
+  const filteredScripts = userScripts?.filter(script =>
     script.inputTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     script.outputScript.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
@@ -168,7 +176,7 @@ export default function LibraryPage() {
             </Card>
           ) : (
             <div className="grid gap-4">
-              {filteredTranscripts.map((transcript: any) => (
+              {filteredTranscripts.map((transcript) => (
                 <Card key={transcript._id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -270,7 +278,7 @@ export default function LibraryPage() {
             </Card>
           ) : (
             <div className="grid gap-4">
-              {filteredScripts.map((script: any) => (
+              {filteredScripts.map((script) => (
                 <Card key={script._id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
