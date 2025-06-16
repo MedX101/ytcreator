@@ -32,7 +32,7 @@ export default function TranscribePage() {
   const [transcriptResult, setTranscriptResult] = useState<any>(null);
   const [error, setError] = useState("");
 
-  const transcribeVideo = useAction(api.youtube.transcribeYouTubeVideo);
+  const transcribeVideo = useAction(api.youtube.transcribeVideo);
   const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
   const userTranscripts = useQuery(api.youtube.getUserTranscripts, 
     userId ? { userId } : "skip"
