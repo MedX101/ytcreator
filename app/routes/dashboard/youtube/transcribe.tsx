@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@clerk/react-router";
-import { useAction, useQuery } from "convex/react";
+import { useAction, useQuery, useMutation } from "convex/react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -32,11 +32,9 @@ export default function TranscribePage() {
   const [transcriptResult, setTranscriptResult] = useState<any>(null);
   const [error, setError] = useState("");
 
-  const transcribeVideo = useAction(api.youtube.transcribeVideo);
-  const analyzeStyle = useAction(api.youtube.analyzeScriptStyle);
-  const userTranscripts = useQuery(api.youtube.getUserTranscripts, 
-    userId ? { userId } : "skip"
-  );
+  const transcribeVideo = useMutation(api.youtube.transcribeVideo);
+  const analyzeStyle = useAction(api.youtube.analyzeStyle);
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts, userId ? { userId } : "skip");
 
   const handleTranscribe = async () => {
     if (!youtubeUrl.trim() || !userId) return;
