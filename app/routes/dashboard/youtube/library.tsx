@@ -36,15 +36,8 @@ export default function LibraryPage() {
   const { userId } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   
-  const userTranscripts = useQuery(
-    api.youtube.getUserTranscripts,
-    userId ? { userId } : "skip"
-  );
-  
-  const userScripts = useQuery(
-    api.youtube.getUserGeneratedScripts,
-    userId ? { userId } : "skip"
-  );
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts);
+  const userScripts = useQuery(api.youtube.getUserScripts);
 
   if (!userId) {
     return (
