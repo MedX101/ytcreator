@@ -51,7 +51,7 @@ export default function TranscribePage() {
       }
 
       const result = await transcribeVideo({
-        youtubeUrl: youtubeUrl.trim(),
+        videoUrl: youtubeUrl.trim(),
       });
 
       setTranscriptResult(result);
