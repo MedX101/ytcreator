@@ -33,8 +33,8 @@ export default function TranscribePage() {
   const [error, setError] = useState("");
 
   const transcribeVideo = useMutation(api.youtube.transcribeVideo);
-  const analyzeStyle = useAction(api.youtube.analyzeStyle);
-  const userTranscripts = useQuery(api.youtube.getUserTranscripts, userId ? { userId } : "skip");
+  const analyzeStyle = useMutation(api.youtube.analyzeStyle);
+  const userTranscripts = useQuery(api.youtube.getUserTranscripts);
 
   const handleTranscribe = async () => {
     if (!youtubeUrl.trim() || !userId) return;
@@ -52,7 +52,6 @@ export default function TranscribePage() {
 
       const result = await transcribeVideo({
         youtubeUrl: youtubeUrl.trim(),
-        userId,
       });
 
       setTranscriptResult(result);
@@ -69,7 +68,6 @@ export default function TranscribePage() {
     try {
       await analyzeStyle({
         transcriptId: transcriptResult.transcriptId,
-        userId,
       });
       
       // Redirect to generate page
