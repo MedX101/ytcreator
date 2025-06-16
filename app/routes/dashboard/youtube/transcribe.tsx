@@ -32,8 +32,8 @@ export default function TranscribePage() {
   const [transcriptResult, setTranscriptResult] = useState<any>(null);
   const [error, setError] = useState("");
 
-  const transcribeVideo = useMutation(api.youtube.transcribeVideo);
-  const analyzeStyle = useMutation(api.youtube.analyzeStyle);
+  const transcribeVideo = useAction(api.youtube.transcribeVideo);
+const analyzeStyle = useAction(api.youtube.analyzeStyle);
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
 
   const handleTranscribe = async () => {
