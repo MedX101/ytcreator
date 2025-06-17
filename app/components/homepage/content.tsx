@@ -1,6 +1,23 @@
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "~/components/ui/tabs";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
+import { 
   ChevronRight, 
   Youtube, 
   TrendingUp, 
@@ -12,7 +29,17 @@ import {
   PlayCircle,
   Eye,
   ThumbsUp,
-  MessageSquare
+  MessageSquare,
+  Sparkles,
+  Video,
+  Mic,
+  FileText,
+  Wand2,
+  Target,
+  BarChart3,
+  Lightbulb,
+  Shield,
+  CheckCircle
 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -82,79 +109,261 @@ export default function ContentSection() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Features Section */}
+      </section>      {/* Interactive Features Section */}
       <section id="features" className="py-20 md:py-32 bg-gradient-to-b from-muted/20 to-background">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <Badge variant="secondary" className="px-4 py-2 mb-6">
-              <Zap className="w-4 h-4 mr-2" />
-              Powerful Features
+              <Sparkles className="w-4 h-4 mr-2" />
+              Advanced AI Features
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Everything You Need to{" "}
+              The Only Tool You Need to{" "}
               <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                Dominate YouTube
+                Master YouTube
               </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From viral video analysis to script generation - we've got every part of your content creation workflow covered.
+              From analyzing viral creators to generating scripts that get views - discover how YTCreator transforms your content creation workflow.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard
-              icon={<Youtube className="w-12 h-12 text-red-500" />}
-              title="Any Video, Any Creator"
-              description="Paste any YouTube URL from any niche - gaming, finance, cooking, beauty - and instantly analyze their style"
-              stats="10M+ videos analyzed"
-            />
+          {/* Interactive Tabs for Features */}
+          <Tabs defaultValue="analyze" className="w-full mb-16">
+            <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto mb-12">
+              <TabsTrigger value="analyze" className="flex items-center gap-2">
+                <Brain className="w-4 h-4" />
+                Analyze
+              </TabsTrigger>
+              <TabsTrigger value="generate" className="flex items-center gap-2">
+                <Wand2 className="w-4 h-4" />
+                Generate
+              </TabsTrigger>
+              <TabsTrigger value="optimize" className="flex items-center gap-2">
+                <Target className="w-4 h-4" />
+                Optimize
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="analyze" className="space-y-8">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold mb-4">AI-Powered Style Analysis</h3>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Our advanced AI dissects any creator's unique style, from their hooks to their storytelling patterns.
+                </p>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <InteractiveFeatureCard
+                  icon={<Youtube className="w-8 h-8 text-red-500" />}
+                  title="Any Creator, Any Niche"
+                  description="Analyze videos from gaming, finance, cooking, beauty, or any other niche"
+                  hoverContent="Works with MrBeast, Emma Chamberlain, PewDiePie, and 10M+ other creators"
+                  stats="10M+ creators analyzed"
+                />
+                <InteractiveFeatureCard
+                  icon={<Mic className="w-8 h-8 text-blue-500" />}
+                  title="Voice & Tone Detection"
+                  description="Identifies personality traits, energy levels, and speaking patterns"
+                  hoverContent="Detects humor style, enthusiasm level, pacing, and emotional triggers"
+                  stats="99% accuracy rate"
+                />
+                <InteractiveFeatureCard
+                  icon={<FileText className="w-8 h-8 text-green-500" />}
+                  title="Structure Mapping"
+                  description="Breaks down their video structure, hooks, and storytelling flow"
+                  hoverContent="Maps intro hooks, transition phrases, call-to-actions, and conclusion styles"
+                  stats="12 key elements tracked"
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="generate" className="space-y-8">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold mb-4">Unlimited Script Generation</h3>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Generate authentic scripts that sound exactly like your favorite creators, but about YOUR topics.
+                </p>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <InteractiveFeatureCard
+                  icon={<Copy className="w-8 h-8 text-purple-500" />}
+                  title="Perfect Style Cloning"
+                  description="Scripts that capture their exact voice, energy, and personality"
+                  hoverContent="Includes their catchphrases, speaking rhythm, and signature expressions"
+                  stats="98% style accuracy"
+                />
+                <InteractiveFeatureCard
+                  icon={<Lightbulb className="w-8 h-8 text-yellow-500" />}
+                  title="Your Ideas, Their Voice"
+                  description="Generate content about any topic in their unique style"
+                  hoverContent="From productivity tips to product reviews - any topic becomes engaging"
+                  stats="Unlimited topics"
+                />
+                <InteractiveFeatureCard
+                  icon={<Video className="w-8 h-8 text-orange-500" />}
+                  title="Multi-Format Support"
+                  description="Perfect for long-form, shorts, podcasts, and social media"
+                  hoverContent="Automatically adjusts length and format while maintaining style consistency"
+                  stats="All formats supported"
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="optimize" className="space-y-8">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold mb-4">Viral Content Optimization</h3>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Leverage proven viral patterns and optimize your content for maximum engagement and reach.
+                </p>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <InteractiveFeatureCard
+                  icon={<TrendingUp className="w-8 h-8 text-green-500" />}
+                  title="Viral Hook Templates"
+                  description="Extract and apply the exact hooks that made videos go viral"
+                  hoverContent="Database of 1000+ proven hooks from videos with 1M+ views"
+                  stats="1000+ viral hooks"
+                />
+                <InteractiveFeatureCard
+                  icon={<BarChart3 className="w-8 h-8 text-blue-500" />}
+                  title="Engagement Prediction"
+                  description="AI predicts which parts of your script will drive the most engagement"
+                  hoverContent="Highlights high-retention moments, potential drop-off points, and viral potential"
+                  stats="85% prediction accuracy"
+                />
+                <InteractiveFeatureCard
+                  icon={<Shield className="w-8 h-8 text-red-500" />}
+                  title="Faceless Channel Ready"
+                  description="Optimized specifically for faceless channels and voiceover content"
+                  hoverContent="Perfect for explainer videos, tutorials, and documentary-style content"
+                  stats="Faceless-optimized"
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Advanced Features Accordion */}
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold mb-4">Advanced Capabilities</h3>
+              <p className="text-lg text-muted-foreground">
+                Discover the powerful features that set YTCreator apart from generic AI tools.
+              </p>
+            </div>
             
-            <FeatureCard
-              icon={<Brain className="w-12 h-12 text-purple-500" />}
-              title="Advanced Style Cloning"
-              description="Our AI studies tone, pacing, word choice, hooks, and storytelling patterns unique to each creator"
-              stats="99% accuracy rate"
-            />
-            
-            <FeatureCard
-              icon={<Copy className="w-12 h-12 text-blue-500" />}
-              title="Unlimited Script Generation"
-              description="Generate endless scripts in any creator's style about YOUR topics and ideas. No limits."
-              stats="Truly unlimited"
-            />
-            
-            <FeatureCard
-              icon={<TrendingUp className="w-12 h-12 text-green-500" />}
-              title="Viral Hook Templates"
-              description="Extract the exact hooks and intros that made videos go viral and apply them to your content"
-              stats="1000+ viral hooks"
-            />
-            
-            <FeatureCard
-              icon={<PlayCircle className="w-12 h-12 text-orange-500" />}
-              title="Multi-Format Support"
-              description="Perfect for long-form, shorts, podcasts, and even social media posts. One style, every format."
-              stats="All formats supported"
-            />
-            
-            <FeatureCard
-              icon={<Users className="w-12 h-12 text-pink-500" />}
-              title="Faceless Channel Ready"
-              description="Specifically designed for faceless channels. Clone successful faceless creators' styles effortlessly"
-              stats="Faceless-optimized"
-            />
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-left">
+                  <div className="flex items-center gap-3">
+                    <Brain className="w-5 h-5 text-purple-500" />
+                    How accurate is the style cloning compared to other AI tools?
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  <div className="space-y-4 pt-4">
+                    <p>
+                      Unlike generic AI that produces robotic, templated content, YTCreator achieves 98% style accuracy by analyzing 12+ unique elements:
+                    </p>
+                    <ul className="list-disc list-inside space-y-2 ml-4">
+                      <li>Speaking rhythm and pacing patterns</li>
+                      <li>Signature phrases and catchwords</li>
+                      <li>Emotional tone and energy levels</li>
+                      <li>Story structure and transition styles</li>
+                      <li>Hook patterns and attention-grabbing techniques</li>
+                      <li>Call-to-action styles and positioning</li>
+                    </ul>
+                    <p className="text-green-600 font-medium">
+                      Result: Scripts so authentic, your audience won't know they're AI-generated.
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-left">
+                  <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-blue-500" />
+                    Can I clone multiple creators for different types of content?
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  <div className="space-y-4 pt-4">
+                    <p>
+                      Absolutely! Build your personal library of creator styles:
+                    </p>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="bg-muted/50 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Educational Content</h4>
+                        <p className="text-sm">Clone Veritasium for science topics, Khan Academy for tutorials</p>
+                      </div>
+                      <div className="bg-muted/50 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Entertainment</h4>
+                        <p className="text-sm">Use MrBeast's style for challenges, Emma Chamberlain for vlogs</p>
+                      </div>
+                      <div className="bg-muted/50 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Business Content</h4>
+                        <p className="text-sm">Apply Graham Stephan for finance, Gary Vee for motivation</p>
+                      </div>
+                      <div className="bg-muted/50 p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2">Faceless Channels</h4>
+                        <p className="text-sm">Clone top documentary or explainer channel styles</p>
+                      </div>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-left">
+                  <div className="flex items-center gap-3">
+                    <Zap className="w-5 h-5 text-yellow-500" />
+                    How fast can I generate scripts compared to writing manually?
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  <div className="space-y-4 pt-4">
+                    <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                          <h4 className="font-semibold text-red-600 mb-2">Manual Writing</h4>
+                          <ul className="text-sm space-y-1">
+                            <li>• Research: 2-3 hours</li>
+                            <li>• Writing: 4-6 hours</li>
+                            <li>• Editing: 1-2 hours</li>
+                            <li className="font-semibold border-t pt-2 mt-2">Total: 7-11 hours</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-green-600 mb-2">With YTCreator</h4>
+                          <ul className="text-sm space-y-1">
+                            <li>• Style analysis: 30 seconds</li>
+                            <li>• Script generation: 15 seconds</li>
+                            <li>• Minor tweaks: 10 minutes</li>
+                            <li className="font-semibold border-t pt-2 mt-2">Total: 11 minutes</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <p className="text-center font-bold text-lg mt-4 text-green-600">
+                        🚀 40x faster than manual writing!
+                      </p>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
-          <div className="text-center mt-12">
-            <Button size="lg" className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700" asChild>
+          <div className="text-center mt-16">
+            <Button size="lg" className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all" asChild>
               <Link to="/sign-up">
-                <Zap className="w-5 h-5 mr-2" />
-                Start Creating Better Scripts Now
-                <ChevronRight className="w-5 h-5 ml-2" />
+                <Sparkles className="w-6 h-6 mr-3" />
+                Start Creating Viral Scripts Now
+                <ChevronRight className="w-6 h-6 ml-3" />
               </Link>
             </Button>
+            <p className="text-muted-foreground mt-4 text-lg">
+              Join 25,000+ creators • No credit card required • 3 free scripts to start
+            </p>
           </div>
         </div>
       </section>
@@ -193,6 +402,62 @@ export default function ContentSection() {
         </div>
       </section>
     </>
+  );
+}
+
+function InteractiveFeatureCard({ 
+  icon, 
+  title, 
+  description, 
+  hoverContent,
+  stats 
+}: { 
+  icon: React.ReactNode; 
+  title: string; 
+  description: string; 
+  hoverContent: string;
+  stats: string;
+}) {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <div className="group cursor-pointer p-6 rounded-2xl bg-background border border-border/50 shadow-sm hover:shadow-xl transition-all hover:scale-105">
+          <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform">
+            {icon}
+          </div>
+          <h3 className="text-lg font-bold mb-3 text-center">{title}</h3>
+          <p className="text-muted-foreground text-center mb-4 text-sm leading-relaxed">{description}</p>
+          <div className="text-center">
+            <Badge variant="secondary" className="text-xs font-medium">
+              {stats}
+            </Badge>
+          </div>
+          <div className="text-center mt-3">
+            <span className="text-xs text-muted-foreground">Hover for details</span>
+          </div>
+        </div>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80 p-4">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            {icon}
+            <h4 className="font-semibold">{title}</h4>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {hoverContent}
+          </p>
+          <div className="flex items-center justify-between pt-2 border-t">
+            <Badge variant="outline" className="text-xs">
+              {stats}
+            </Badge>
+            <div className="flex items-center gap-1 text-xs text-green-600">
+              <CheckCircle className="w-3 h-3" />
+              <span>Proven Results</span>
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 
