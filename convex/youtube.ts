@@ -89,10 +89,8 @@ export const analyzeStyle = action({
       const transcript = await ctx.runQuery(api.youtube.getTranscript, { id: transcriptId });
       if (!transcript || transcript.userId !== identity.subject) {
         throw new Error("Transcript not found or unauthorized");
-      }
-
-      // Use Gemini to analyze the style
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      }      // Use Gemini to analyze the style
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       const prompt = `
         Analyze the following video transcript and provide a detailed style analysis:
@@ -180,10 +178,8 @@ export const generateScript = action({
       const transcript = await ctx.runQuery(api.youtube.getTranscript, { id: styleAnalysis.transcriptId });
       if (!transcript) {
         throw new Error("Original transcript not found");
-      }
-
-      // Use Gemini to generate the script
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      }      // Use Gemini to generate the script
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       const prompt = `
         Create a YouTube video script on the topic "${topic}" using the following style analysis as a guide:
@@ -281,10 +277,8 @@ export const refineScript = action({
       const script = await ctx.runQuery(api.youtube.getScript, { id: scriptId });
       if (!script || script.userId !== identity.subject) {
         throw new Error("Script not found or unauthorized");
-      }
-
-      // Use Gemini to refine the script
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      }      // Use Gemini to refine the script
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       const prompt = `
         Please refine the following YouTube script based on these instructions:
