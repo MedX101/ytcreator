@@ -33,11 +33,8 @@ export default function IntegrationsSection({
   return (
     <section id="hero" className="relative">
       <Navbar loaderData={loaderData} />
-      
-      {/* Hero Section */}
+        {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-background via-background/95 to-red-500/5 dark:from-background dark:via-background/95 dark:to-red-500/10">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,0,0,.02)_25%,rgba(255,0,0,.02)_50%,transparent_50%,transparent_75%,rgba(255,0,0,.02)_75%,rgba(255,0,0,.02))] bg-[length:30px_30px]" />
         
         {/* Floating Icons Animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
