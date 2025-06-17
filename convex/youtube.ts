@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { mutation, query, action } from "./_generated/server";
 import { api } from "./_generated/api";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -12,7 +13,7 @@ export const transcribeVideo = action({
     videoUrl: v.string(),
     title: v.optional(v.string()),
   },
-  handler: async (ctx, { videoUrl, title }) => {
+  handler: async (ctx, { videoUrl, title }): Promise<{ transcriptId: Id<"transcripts">; transcript: string }> => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
@@ -38,10 +39,8 @@ export const transcribeVideo = action({
         },
       ]);
       
-      const transcript = result.response.text();
-
-      // Store the transcript in the database using a mutation
-      const transcriptId = await ctx.runMutation(api.youtube.storeTranscript, {
+      const transcript = result.response.text();      // Store the transcript in the database using a mutation
+      const transcriptId: Id<"transcripts"> = await ctx.runMutation(api.youtube.storeTranscript, {
         userId: identity.subject,
         youtubeUrl: videoUrl,
         title: title || "Untitled Video",
@@ -81,13 +80,11 @@ export const analyzeStyle = action({
   args: {
     transcriptId: v.id("transcripts"),
   },
-  handler: async (ctx, { transcriptId }) => {
+  handler: async (ctx, { transcriptId }): Promise<{ analysisId: Id<"styleAnalyses">; analysis: string }> => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
-    }
-
-    try {
+    }    try {
       // Get the transcript using a query
       const transcript = await ctx.runQuery(api.youtube.getTranscript, { id: transcriptId });
       if (!transcript || transcript.userId !== identity.subject) {
@@ -117,10 +114,8 @@ export const analyzeStyle = action({
       `;
 
       const result = await model.generateContent(prompt);
-      const analysis = result.response.text();
-
-      // Store the style analysis using a mutation
-      const analysisId = await ctx.runMutation(api.youtube.storeStyleAnalysis, {
+      const analysis = result.response.text();      // Store the style analysis using a mutation
+      const analysisId: Id<"styleAnalyses"> = await ctx.runMutation(api.youtube.storeStyleAnalysis, {
         userId: identity.subject,
         transcriptId,
         analysis,
@@ -170,13 +165,11 @@ export const generateScript = action({
     length: v.optional(v.string()),
     additionalInstructions: v.optional(v.string()),
   },
-  handler: async (ctx, { analysisId, topic, length = "medium", additionalInstructions }) => {
+  handler: async (ctx, { analysisId, topic, length = "medium", additionalInstructions }): Promise<{ scriptId: Id<"generatedScripts">; script: string }> => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
-    }
-
-    try {
+    }    try {
       // Get the style analysis using a query
       const styleAnalysis = await ctx.runQuery(api.youtube.getStyleAnalysis, { id: analysisId });
       if (!styleAnalysis || styleAnalysis.userId !== identity.subject) {
@@ -223,10 +216,8 @@ export const generateScript = action({
       `;
 
       const result = await model.generateContent(prompt);
-      const script = result.response.text();
-
-      // Store the generated script using a mutation
-      const scriptId = await ctx.runMutation(api.youtube.storeGeneratedScript, {
+      const script = result.response.text();      // Store the generated script using a mutation
+      const scriptId: Id<"generatedScripts"> = await ctx.runMutation(api.youtube.storeGeneratedScript, {
         userId: identity.subject,
         transcriptId: styleAnalysis.transcriptId,
         styleAnalysisId: analysisId,
