@@ -142,23 +142,7 @@ export default function IntegrationsSection({
                   <Play className="w-6 h-6 mr-3" />
                   Watch 2-Min Demo
                 </Link>
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="pt-12">
-              <p className="text-lg text-muted-foreground mb-6">Trusted by top creators from these niches</p>
-              <div className="flex flex-wrap justify-center items-center gap-8 opacity-70">
-                <CreatorNiche icon="🎮" label="Gaming" />
-                <CreatorNiche icon="💰" label="Finance" />
-                <CreatorNiche icon="🏋️" label="Fitness" />
-                <CreatorNiche icon="🍳" label="Cooking" />
-                <CreatorNiche icon="🎭" label="Entertainment" />
-                <CreatorNiche icon="📚" label="Education" />
-                <CreatorNiche icon="💄" label="Beauty" />
-                <CreatorNiche icon="🎵" label="Music" />
-              </div>
-            </div>
+              </Button>            </div>
           </div>
         </div>
       </div>
