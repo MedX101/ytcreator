@@ -56,65 +56,62 @@ export default function IntegrationsSection({
           <div className="absolute top-1/3 right-1/3 animate-float-delayed">
             <Wand2 className="w-8 h-8 text-orange-500/20" />
           </div>
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32 lg:py-48">
-          <div className="text-center space-y-10">
+        </div>        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 md:py-32 lg:py-48">
+          <div className="text-center space-y-8 md:space-y-10">
             {/* Badge */}
             <div className="flex justify-center">
-              <Badge variant="secondary" className="px-6 py-3 text-base font-medium bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800">
-                <Youtube className="w-5 h-5 mr-2" />
-                #1 AI Script Writter for YouTube Creators
+              <Badge variant="secondary" className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800">
+                <Youtube className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
+                #1 AI Script Writer for YouTube Creators
               </Badge>
             </div>
 
             {/* Main Headline */}
-            <div className="space-y-6">
-              <h1 className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">
+            <div className="space-y-4 sm:space-y-6">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight">
                 Stop Writing{" "}
                 <span className="bg-gradient-to-r from-red-500 via-red-600 to-orange-500 bg-clip-text text-transparent">
                   Boring Scripts
                 </span>
                 <br />
-                <span className="text-4xl sm:text-5xl lg:text-6xl text-muted-foreground">
-                  Clone Any Creator's Style
-                </span>
+                <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-muted-foreground">
+                  Clone Any Creator's Style                </span>
               </h1>
-              <p className="mx-auto max-w-4xl text-xl md:text-2xl text-muted-foreground leading-relaxed">
+              <p className="mx-auto max-w-4xl text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed px-4">
                 Transform any YouTube video into scripts that <strong className="text-foreground">sound exactly like your favorite creators</strong>. 
                 Our AI analyzes their unique style and generates authentic content that gets views.
               </p>
             </div>
 
             {/* Social Proof */}
-            <div className="flex flex-wrap justify-center items-center gap-8 text-lg text-muted-foreground">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 sm:gap-8 text-sm sm:text-lg text-muted-foreground px-4">
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-red-500 border-2 border-background flex items-center justify-center">
-                    <Youtube className="w-4 h-4 text-white" />
+                  <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-red-500 border-2 border-background flex items-center justify-center">
+                    <Youtube className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-background flex items-center justify-center">
-                    <Video className="w-4 h-4 text-white" />
+                  <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-blue-500 border-2 border-background flex items-center justify-center">
+                    <Video className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-background flex items-center justify-center">
-                    <Star className="w-4 h-4 text-white" />
+                  <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-green-500 border-2 border-background flex items-center justify-center">
+                    <Star className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
                   </div>
                 </div>
                 <span><strong>25,000+</strong> Creators Trust Us</span>
               </div>
               <div className="flex items-center gap-3">
-                <TrendingUp className="w-6 h-6 text-green-500" />
+                <TrendingUp className="w-5 sm:w-6 h-5 sm:h-6 text-green-500" />
                 <span><strong>10M+</strong> Scripts Generated</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle className="w-6 h-6 text-blue-500" />
-                <span><strong>99%</strong> Style Accuracy</span>
+                <CheckCircle className="w-5 sm:w-6 h-5 sm:h-6 text-blue-500" />
+                <span><strong>98%</strong> Style Accuracy</span>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-              <Button size="lg" className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center pt-6 sm:pt-8 px-4">
+              <Button size="lg" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all" asChild>
                 <Link
                   to={
                     loaderData?.isSignedIn
@@ -133,26 +130,25 @@ export default function IntegrationsSection({
                     : "Try Free - No Credit Card"}
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Link>
-              </Button>
-              <Button variant="outline" size="lg" className="px-12 py-6 text-xl border-2 hover:bg-muted/50" asChild>
+              </Button>              <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl border-2 hover:bg-muted/50" asChild>
                 <Link to="#demo">
-                  <Play className="w-6 h-6 mr-3" />
+                  <Play className="w-5 sm:w-6 h-5 sm:h-6 mr-3" />
                   Watch 2-Min Demo
                 </Link>
-              </Button>            </div>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* How It Works - Quick Preview */}
-      <div className="relative bg-gradient-to-b from-muted/20 to-muted/40 py-20">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="px-4 py-2 mb-6">
+      <div className="relative bg-gradient-to-b from-muted/20 to-muted/40 py-16 sm:py-20">        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <Badge variant="outline" className="px-4 py-2 mb-4 sm:mb-6">
               <Clock className="w-4 h-4 mr-2" />
               Takes Less Than 5 Minutes
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
               From Any Video to{" "}
               <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                 Your Style
@@ -160,7 +156,7 @@ export default function IntegrationsSection({
             </h2>
           </div>
           
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
             <ProcessCard
               step="1"
               icon={<Youtube className="w-12 h-12 text-red-500" />}
