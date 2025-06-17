@@ -66,14 +66,15 @@ export default function Pricing({ loaderData }: { loaderData: any }) {
 
   return (
     <section id="pricing" className="py-16 md:py-32">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl space-y-6 text-center">
+      <div className="mx-auto max-w-6xl px-6">        <div className="mx-auto max-w-2xl space-y-6 text-center">
           <h1 className="text-center text-4xl font-semibold lg:text-5xl">
-            Pricing that Scales with You
+            Start Creating Viral Scripts{" "}
+            <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+              Today
+            </span>
           </h1>
-          <p>
-            Choose the plan that fits your needs. All plans include full access
-            to our platform.
+          <p className="text-xl text-muted-foreground">
+            Choose the plan that fits your content creation goals. Start free, upgrade when you're ready to scale.
           </p>
         </div>
 
@@ -173,22 +174,28 @@ export default function Pricing({ loaderData }: { loaderData: any }) {
                             }
                           })()
                         ) : (
-                          "Get Started (Demo)"
+                          "Get Started"
                         )}
                       </Button>
                     </CardHeader>
 
                     <CardContent className="space-y-4">
-                      <hr className="border-dashed" />
-
-                      <ul className="list-outside space-y-3 text-sm">
+                      <hr className="border-dashed" />                      <ul className="list-outside space-y-3 text-sm">
                         <li className="flex items-center gap-2">
                           <Check className="size-3" />
-                          All features included
+                          Unlimited script generation
                         </li>
                         <li className="flex items-center gap-2">
                           <Check className="size-3" />
-                          Priority support
+                          Clone any creator's style
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3" />
+                          All video formats supported
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3" />
+                          Priority customer support
                         </li>
                         <li className="flex items-center gap-2">
                           <Check className="size-3" />

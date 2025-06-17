@@ -9,7 +9,7 @@ import { cn } from "~/lib/utils";
 const menuItems = [
   { name: "Home", href: "#hero" },
   { name: "Features", href: "#features" },
-  { name: "Team", href: "#team" },
+  { name: "How It Works", href: "#demo" },
   { name: "Pricing", href: "#pricing" },
 ];
 
@@ -48,7 +48,7 @@ export const Navbar = ({
     : loaderData.hasActiveSubscription ? "/dashboard" : "/pricing";
 
   const dashboardText = !loaderData?.isSignedIn 
-    ? "Get Started (Demo)"
+    ? "Get Started"
     : loaderData.hasActiveSubscription ? "Dashboard" : "Subscribe";
   return (
     <header>
@@ -64,14 +64,18 @@ export const Navbar = ({
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            <div className="flex w-full justify-between lg:w-auto">
-              <Link
+            <div className="flex w-full justify-between lg:w-auto">              <Link
                 to="/"
                 aria-label="home"
                 className="flex items-center space-x-2 font-semibold text-xl"
                 prefetch="viewport"
               >
-                <img src="/rsk.png" alt="RSK Logo" className="h-12 w-12" />
+                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">YT</span>
+                </div>
+                <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent font-bold">
+                  YTCreator
+                </span>
               </Link>
 
               <button
@@ -113,16 +117,7 @@ export const Navbar = ({
                     </li>
                   ))}
                 </ul>
-              </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Link
-                  to="https://github.com/michaelshimeles/react-starter-kit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center"
-                >
-                  <Github className="w-5 h-5" />
-                </Link>
+              </div>              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                 {loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3">
                     <Button asChild size="sm">
@@ -147,7 +142,7 @@ export const Navbar = ({
                     <Button
                       asChild
                       size="sm"
-                      className={cn(isScrolled && "lg:hidden")}
+                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled && "lg:hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>Sign Up</span>
@@ -156,7 +151,7 @@ export const Navbar = ({
                     <Button
                       asChild
                       size="sm"
-                      className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled ? "lg:inline-flex" : "hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>{dashboardText}</span>

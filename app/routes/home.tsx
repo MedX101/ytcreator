@@ -4,18 +4,18 @@ import ContentSection from "~/components/homepage/content";
 import Footer from "~/components/homepage/footer";
 import Integrations from "~/components/homepage/integrations";
 import Pricing from "~/components/homepage/pricing";
-import Team from "~/components/homepage/team";
+import DemoSection from "~/components/homepage/demo";
 import { api } from "../../convex/_generated/api";
 import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
-  const title = "React Starter Kit - Launch Your SAAS Quickly";
+  const title = "YTCreator - AI-Powered YouTube Script Generator | Clone Your Writing Style";
   const description =
-    "This powerful starter kit is designed to help you launch your SAAS application quickly and efficiently.";
-  const keywords = "React, Starter Kit, SAAS, Launch, Quickly, Efficiently";
-  const siteUrl = "https://www.reactstarter.xyz/";
+    "Transform any YouTube video into your personal writing style with AI. Transcribe, analyze, and generate scripts that sound exactly like you. Start creating authentic content at scale.";
+  const keywords = "YouTube, AI Script Generator, Content Creation, Video Transcription, AI Writing, YouTube Creator Tools, Script Writing, Content Marketing";
+  const siteUrl = "https://ytcreator.me/";
   const imageUrl =
-    "https://jdj14ctwppwprnqu.public.blob.vercel-storage.com/rsk-image-FcUcfBMBgsjNLo99j3NhKV64GT2bQl.png";
+    "https://ytcreator.me/og-image.png";
 
   return [
     { title },
@@ -32,7 +32,7 @@ export function meta({}: Route.MetaArgs) {
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:url", content: siteUrl },
-    { property: "og:site_name", content: "React Starter Kit" },
+    { property: "og:site_name", content: "YTCreator" },
     { property: "og:image", content: imageUrl },
 
     // Twitter Card
@@ -47,7 +47,7 @@ export function meta({}: Route.MetaArgs) {
       name: "keywords",
       content: keywords,
     },
-    { name: "author", content: "Ras Mic" },
+    { name: "author", content: "YTCreator Team" },
     { name: "favicon", content: imageUrl },
   ];
 }
@@ -80,7 +80,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <>
       <Integrations loaderData={loaderData} />
       <ContentSection />
-      <Team />
+      <DemoSection />
       <Pricing loaderData={loaderData} />
       <Footer />
     </>
