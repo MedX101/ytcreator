@@ -184,41 +184,6 @@ export default function IntegrationsSection({
               accent="green"
             />
           </div>
-
-          {/* Real Examples */}
-          <div className="mt-20">
-            <div className="text-center mb-12">
-              <h3 className="text-2xl font-bold mb-4">Creators We've Successfully Cloned</h3>
-              <p className="text-muted-foreground">Our AI has mastered these unique styles and thousands more</p>
-            </div>
-            
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <CreatorExample 
-                name="MrBeast" 
-                style="High-energy challenges" 
-                hook="I spent 50 hours in..."
-                views="100M+"
-              />
-              <CreatorExample 
-                name="Emma Chamberlain" 
-                style="Relatable authenticity" 
-                hook="Okay guys, so like..."
-                views="50M+"
-              />
-              <CreatorExample 
-                name="Mark Rober" 
-                style="Educational storytelling" 
-                hook="Here's something that will blow your mind..."
-                views="200M+"
-              />
-              <CreatorExample 
-                name="Ali Abdaal" 
-                style="Productivity insights" 
-                hook="I've been testing this for 30 days..."
-                views="25M+"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </section>

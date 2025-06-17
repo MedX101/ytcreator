@@ -73,9 +73,6 @@ export default function Pricing({ loaderData }: { loaderData: any }) {
               Today
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            Choose the plan that fits your content creation goals. Start free, upgrade when you're ready to scale.
-          </p>
         </div>
 
         {!loaderData?.plans ? (

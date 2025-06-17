@@ -21,35 +21,11 @@ export default function DemoSection() {
             See It In Action
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Watch How Easy It Is to{" "}
+            See How Easy It Is to{" "}
             <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
               Clone Any Style
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            See a real example of how we transform a popular creator's video into a script template you can use for your own content.
-          </p>
-        </div>
-
-        {/* Demo Video Placeholder */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border-2 border-red-200 dark:border-red-800">
-            <div className="aspect-video flex items-center justify-center">
-              <div className="text-center space-y-6">
-                <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-                  <Play className="w-12 h-12 text-white ml-1" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold">2-Minute Demo Video</h3>
-                  <p className="text-muted-foreground">See YTCreator clone MrBeast's style in real-time</p>
-                </div>
-                <Button size="lg" className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
-                  <Play className="w-5 h-5 mr-2" />
-                  Watch Demo
-                </Button>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Process Steps */}
