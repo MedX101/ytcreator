@@ -103,58 +103,21 @@ export const Navbar = ({
               </ul>
             </div>
 
-            <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">              <div className="lg:hidden w-full">
-                <ul className="space-y-6 text-lg">
+            <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+              <div className="lg:hidden">
+                <ul className="space-y-6 text-base">
                   {menuItems.map((item, index) => (
                     <li key={index}>
                       <button
                         onClick={() => handleNavClick(item.href)}
-                        className="text-muted-foreground hover:text-foreground hover:cursor-pointer block duration-150 transition-colors w-full text-left py-3 px-2 rounded-lg hover:bg-muted/50"
+                        className="text-muted-foreground hover:cursor-pointer  block duration-150 transition-colors w-full text-left"
                       >
-                        <span className="font-medium">{item.name}</span>
+                        <span>{item.name}</span>
                       </button>
                     </li>
                   ))}
                 </ul>
-                
-                {/* Mobile CTA buttons */}
-                <div className="mt-8 pt-6 border-t border-border/50">
-                  {loaderData?.isSignedIn ? (
-                    <div className="space-y-3">
-                      <Button asChild size="lg" className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
-                        <Link to={dashboardLink} prefetch="viewport">
-                          <span>{dashboardText}</span>
-                        </Link>
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="lg"
-                        className="w-full"
-                      >
-                        <Link to="/sign-in" prefetch="viewport">
-                          <span>Login</span>
-                        </Link>
-                      </Button>
-                      <Button
-                        asChild
-                        size="lg"
-                        className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
-                      >
-                        <Link to="/sign-up" prefetch="viewport">
-                          <span>Start Free</span>
-                        </Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Desktop buttons */}
-              <div className="hidden lg:flex items-center gap-3">
+              </div>              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                 {loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3">
                     <Button asChild size="sm">
@@ -180,8 +143,9 @@ export const Navbar = ({
                       asChild
                       size="sm"
                       className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled && "lg:hidden")}
-                    >                      <Link to="/sign-up" prefetch="viewport">
-                        <span>Start Free</span>
+                    >
+                      <Link to="/sign-up" prefetch="viewport">
+                        <span>Sign Up</span>
                       </Link>
                     </Button>
                     <Button
