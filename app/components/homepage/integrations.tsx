@@ -142,52 +142,155 @@ export default function IntegrationsSection({
               </Button>            </div>
           </div>
         </div>
-      </div>
-
-      {/* How It Works - Quick Preview */}
+      </div>      {/* What Makes Us Different */}
       <div className="relative bg-gradient-to-b from-muted/20 to-muted/40 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <Badge variant="outline" className="px-4 py-2 mb-6">
-              <Clock className="w-4 h-4 mr-2" />
-              Takes Less Than 5 Minutes
+              <Sparkles className="w-4 h-4 mr-2" />
+              Why Creators Choose YTCreator
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              From Any Video to{" "}
+              Not Just Another{" "}
               <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                Your Style
+                AI Writing Tool
               </span>
             </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              We go deeper than generic AI - we capture the subtle nuances that make each creator unique
+            </p>
           </div>
           
           <div className="grid gap-8 md:grid-cols-3">
-            <ProcessCard
-              step="1"
-              icon={<Youtube className="w-12 h-12 text-red-500" />}
-              title="Paste Any YouTube URL"
-              description="Choose any creator's video you want to replicate the style from. Works with any niche!"
-              highlight="10M+ videos analyzed"
-            />
-            <ProcessCard
-              step="2"
+            <UniqueFeatureCard
               icon={<Brain className="w-12 h-12 text-purple-500" />}
-              title="AI Analyzes Their Style"
-              description="Our advanced AI studies their tone, structure, word choice, and unique patterns in seconds"
-              highlight="99% accuracy rate"
+              title="Psychological Pattern Recognition"
+              description="Our AI identifies emotional triggers, storytelling arcs, and persuasion techniques used by top creators"
+              example="Detects how MrBeast builds suspense before big reveals"
+              accent="purple"
             />
-            <ProcessCard
-              step="3"
-              icon={<PenTool className="w-12 h-12 text-green-500" />}
-              title="Generate Perfect Scripts"
-              description="Get unlimited scripts that sound exactly like them - but about YOUR topics and ideas"
-              highlight="Unlimited generation"
+            <UniqueFeatureCard
+              icon={<Wand2 className="w-12 h-12 text-orange-500" />}
+              title="Hook & Retention Mastery"
+              description="Extract the exact opening lines, transitions, and retention tactics that keep viewers watching"
+              example="Clone Emma Chamberlain's authentic conversational style"
+              accent="orange"
             />
+            <UniqueFeatureCard
+              icon={<TrendingUp className="w-12 h-12 text-green-500" />}
+              title="Viral Formula Extraction"
+              description="Reverse-engineer what made videos go viral and apply those patterns to your content"
+              example="Replicate PewDiePie's comedy timing and energy"
+              accent="green"
+            />
+          </div>
+
+          {/* Real Examples */}
+          <div className="mt-20">
+            <div className="text-center mb-12">
+              <h3 className="text-2xl font-bold mb-4">Creators We've Successfully Cloned</h3>
+              <p className="text-muted-foreground">Our AI has mastered these unique styles and thousands more</p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <CreatorExample 
+                name="MrBeast" 
+                style="High-energy challenges" 
+                hook="I spent 50 hours in..."
+                views="100M+"
+              />
+              <CreatorExample 
+                name="Emma Chamberlain" 
+                style="Relatable authenticity" 
+                hook="Okay guys, so like..."
+                views="50M+"
+              />
+              <CreatorExample 
+                name="Mark Rober" 
+                style="Educational storytelling" 
+                hook="Here's something that will blow your mind..."
+                views="200M+"
+              />
+              <CreatorExample 
+                name="Ali Abdaal" 
+                style="Productivity insights" 
+                hook="I've been testing this for 30 days..."
+                views="25M+"
+              />
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+const UniqueFeatureCard = memo(({
+  icon,
+  title,
+  description,
+  example,
+  accent,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  example: string;
+  accent: 'purple' | 'orange' | 'green';
+}) => {
+  const accentColors = {
+    purple: 'border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/20',
+    orange: 'border-orange-200 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-950/20',
+    green: 'border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-950/20'
+  };
+
+  return (
+    <div className={cn(
+      "text-center space-y-6 p-8 rounded-2xl bg-background/60 border backdrop-blur-sm transition-all hover:shadow-xl hover:scale-105 group",
+      accentColors[accent]
+    )}>
+      <div className="flex justify-center group-hover:scale-110 transition-transform">{icon}</div>
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold">{title}</h3>
+        <p className="text-muted-foreground leading-relaxed">{description}</p>
+        <div className="bg-muted/50 rounded-lg p-3 text-sm italic text-muted-foreground border-l-4 border-current">
+          Example: {example}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+const CreatorExample = memo(({
+  name,
+  style,
+  hook,
+  views,
+}: {
+  name: string;
+  style: string;
+  hook: string;
+  views: string;
+}) => {
+  return (
+    <div className="bg-background rounded-xl p-6 border hover:shadow-lg transition-all group">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="font-bold text-lg">{name}</h4>
+          <Badge variant="secondary" className="text-xs">{views} views</Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">{style}</p>
+        <div className="bg-muted/50 rounded p-3 text-sm italic">
+          "{hook}"
+        </div>
+        <div className="flex items-center gap-2 text-xs text-green-600">
+          <CheckCircle className="w-3 h-3" />
+          <span>Style mastered</span>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 const CreatorNiche = memo(({
   icon,
