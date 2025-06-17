@@ -18,23 +18,25 @@ import { Link } from "react-router";
 
 export default function ContentSection() {
   return (
-    <>      {/* Problem Section */}
-      <section id="problem" className="py-16 md:py-32">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="text-center mb-12">
+    <>
+      {/* Problem Section */}
+      <section id="problem" className="py-20 md:py-32 bg-gradient-to-b from-background to-muted/20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-16">
             <Badge variant="destructive" className="px-4 py-2 mb-6">
               <Clock className="w-4 h-4 mr-2" />
               The YouTube Creator Struggle
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-semibold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Tired of <span className="text-red-500">Generic AI Scripts</span> That Kill Your Views?
             </h2>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2 md:gap-12">
+          <div className="grid gap-8 md:grid-cols-2 items-center">
             <div className="space-y-6">
-              <div className="space-y-4">                <h3 className="text-xl font-semibold text-red-500">❌ What Other AI Tools Give You:</h3>
-                <ul className="space-y-3 text-muted-foreground">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-red-500">❌ What Other AI Tools Give You:</h3>
+                <ul className="space-y-3 text-lg text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 mt-1">•</span>
                     <span>Boring, robotic scripts that sound like everyone else</span>
@@ -56,8 +58,9 @@ export default function ContentSection() {
             </div>
             
             <div className="space-y-6">
-              <div className="space-y-4">                <h3 className="text-xl font-semibold text-green-500">✅ What YTCreator Gives You:</h3>
-                <ul className="space-y-3 text-muted-foreground">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-green-500">✅ What YTCreator Gives You:</h3>
+                <ul className="space-y-3 text-lg text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">•</span>
                     <span>Scripts that sound exactly like your favorite creators</span>
