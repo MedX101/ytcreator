@@ -134,12 +134,7 @@ export default function IntegrationsSection({
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="px-12 py-6 text-xl border-2 hover:bg-muted/50" asChild>
-                <Link to="#demo">
-                  <Play className="w-6 h-6 mr-3" />
-                  Watch 2-Min Demo
-                </Link>
-              </Button>            </div>
+          </div>
           </div>
         </div>
       </div>      {/* What Makes Us Different */}
