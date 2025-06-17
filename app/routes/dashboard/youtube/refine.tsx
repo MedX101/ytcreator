@@ -274,7 +274,7 @@ export default function RefinePage() {
                   <SelectContent>
                     {availableScripts.map((script) => (
                       <SelectItem key={script._id} value={script._id}>
-                        {script.topic || "Untitled Script"}
+                        {script.inputTitle || "Untitled Script"}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -286,10 +286,10 @@ export default function RefinePage() {
               <div className="mt-4 p-4 bg-muted/50 rounded-lg">
                 <h4 className="font-medium mb-2">Current Script:</h4>
                 <p className="text-sm text-muted-foreground mb-2">
-                  <span className="font-medium">Topic:</span> {selectedScript.topic}
+                  <span className="font-medium">Topic:</span> {selectedScript.inputTitle}
                 </p>
                 <Textarea
-                  value={selectedScript.content?.substring(0, 300) + "..."}
+                  value={selectedScript.outputScript?.substring(0, 300) + "..."}
                   readOnly
                   className="text-sm"
                   rows={3}
