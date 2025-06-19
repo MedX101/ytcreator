@@ -84,11 +84,10 @@ export default function FooterSection() {
                   <HelpCircle className="w-4 h-4" />
                   Help Center
                 </Link>
-              </li>
-              <li>
-                <Link to="mailto:support@ytcreator.me" className="text-muted-foreground hover:text-foreground transition-colors">
+              </li>              <li>
+                <a href="mailto:hello@ytcreator.me?subject=YTCreator Support Request" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact Support
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">

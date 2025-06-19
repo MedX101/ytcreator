@@ -385,9 +385,8 @@ export default function Help() {
             <h2 className="text-2xl font-bold mb-4">Still Need Help?</h2>
             <p className="text-muted-foreground mb-6">
               Can't find what you're looking for? Our support team is here to help.
-            </p>
-            <Button asChild>
-              <Link to="/contact">Contact Support</Link>
+            </p>            <Button asChild>
+              <a href="mailto:hello@ytcreator.me?subject=YTCreator Support Request">Contact Support</a>
             </Button>
           </div>
         </div>

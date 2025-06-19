@@ -357,11 +357,9 @@ export default function Privacy() {
             <CardContent>
               <p className="text-muted-foreground mb-4">
                 If you have questions about this Privacy Policy or how we handle your data, please contact us:
-              </p>
-
-              <div className="space-y-2">
+              </p>              <div className="space-y-2">
                 <p><strong>Email:</strong> privacy@ytcreator.me</p>
-                <p><strong>Support:</strong> <Link to="/contact" className="text-blue-600 hover:underline">Contact Form</Link></p>
+                <p><strong>Support:</strong> <a href="mailto:hello@ytcreator.me?subject=YTCreator Privacy Question" className="text-blue-600 hover:underline">Contact Support</a></p>
               </div>
 
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
@@ -398,12 +396,11 @@ export default function Privacy() {
           <div className="space-y-4">
             <p className="text-muted-foreground">
               Questions about our privacy practices? We're here to help.
-            </p>
-            <Button asChild>
-              <Link to="/contact">
+            </p>            <Button asChild>
+              <a href="mailto:hello@ytcreator.me?subject=YTCreator Privacy Question">
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Privacy Team
-              </Link>
+              </a>
             </Button>
           </div>
         </div>

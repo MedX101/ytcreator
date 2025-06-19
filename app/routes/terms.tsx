@@ -291,12 +291,11 @@ export default function Terms() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
                 If you have questions about these Terms of Service, please contact us through our support channels.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              </p>              <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild variant="outline" size="sm">
-                  <Link to="/contact">
+                  <a href="mailto:hello@ytcreator.me?subject=YTCreator Support Request">
                     Contact Support
-                  </Link>
+                  </a>
                 </Button>
                 <Button asChild variant="outline" size="sm">
                   <Link to="/help">
@@ -313,11 +312,10 @@ export default function Terms() {
           <h2 className="text-2xl font-bold mb-4">Questions About Our Terms?</h2>
           <p className="text-muted-foreground mb-6">
             Our support team is here to help clarify any questions about our terms of service.
-          </p>
-          <Button asChild>
-            <Link to="/contact">
+          </p>          <Button asChild>
+            <a href="mailto:hello@ytcreator.me?subject=YTCreator Support - Terms Question">
               Get Support
-            </Link>
+            </a>
           </Button>
         </div>
       </div>

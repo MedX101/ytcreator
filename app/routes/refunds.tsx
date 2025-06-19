@@ -320,12 +320,11 @@ export default function Refunds() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
                 Questions about our refund policy or need to request a refund? Our support team is here to help.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              </p>              <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild>
-                  <Link to="/contact">
+                  <a href="mailto:hello@ytcreator.me?subject=YTCreator Refund Request">
                     Request Refund
-                  </Link>
+                  </a>
                 </Button>
                 <Button asChild variant="outline">
                   <Link to="/help">
@@ -342,12 +341,11 @@ export default function Refunds() {
           <h2 className="text-2xl font-bold mb-4">Questions About Refunds?</h2>
           <p className="text-muted-foreground mb-6">
             We're committed to customer satisfaction. Contact us to discuss your situation and explore options.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          </p>          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild>
-              <Link to="/contact">
+              <a href="mailto:hello@ytcreator.me?subject=YTCreator Refund Request">
                 Contact Support
-              </Link>
+              </a>
             </Button>
             <Button asChild variant="outline">
               <Link to="/terms">

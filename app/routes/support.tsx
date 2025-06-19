@@ -79,10 +79,8 @@ export default function Support() {
                 </div>
               </CardContent>
             </Link>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/contact">
+          </Card>          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <a href="mailto:hello@ytcreator.me?subject=YTCreator Support Request">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/20">
@@ -100,7 +98,7 @@ export default function Support() {
                   <span>Response within 24 hours</span>
                 </div>
               </CardContent>
-            </Link>
+            </a>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
@@ -175,13 +173,12 @@ export default function Support() {
           <h2 className="text-2xl font-bold mb-4">Still Need Help?</h2>
           <p className="text-muted-foreground mb-6">
             Our support team is here to help you succeed with YTCreator.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          </p>          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild>
-              <Link to="/contact">
+              <a href="mailto:hello@ytcreator.me?subject=YTCreator Support Request">
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Support
-              </Link>
+              </a>
             </Button>
             <Button asChild variant="outline">
               <Link to="/help">
