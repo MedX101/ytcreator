@@ -83,31 +83,29 @@ export default function IntegrationsSection({
                 Stop spending hours writing scripts that sound like <strong className="text-foreground">boring robots</strong>. 
                 Copy the exact writing style of any viral creator and watch your views explode.
               </p>
-            </div>
-
-            {/* Social Proof */}
+            </div>            {/* Sales-Focused Value Props */}
             <div className="flex flex-wrap justify-center items-center gap-8 text-lg text-muted-foreground">
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
                   <div className="w-8 h-8 rounded-full bg-red-500 border-2 border-background flex items-center justify-center">
-                    <Youtube className="w-4 h-4 text-white" />
+                    <PenTool className="w-4 h-4 text-white" />
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-background flex items-center justify-center">
-                    <Video className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-orange-500 border-2 border-background flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-white" />
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-background flex items-center justify-center">
-                    <Star className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-background flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <span><strong>25,000+</strong> Creators Trust Us</span>
+                <span><strong>Stop Writing</strong> Boring Scripts</span>
               </div>
               <div className="flex items-center gap-3">
                 <TrendingUp className="w-6 h-6 text-green-500" />
-                <span><strong>10M+</strong> Scripts Generated</span>
+                <span><strong>Start Getting</strong> Real Views</span>
               </div>
               <div className="flex items-center gap-3">
-                <CheckCircle className="w-6 h-6 text-blue-500" />
-                <span><strong>99%</strong> Style Accuracy</span>
+                <Copy className="w-6 h-6 text-purple-500" />
+                <span><strong>Clone Any</strong> Viral Creator</span>
               </div>
             </div>
 
