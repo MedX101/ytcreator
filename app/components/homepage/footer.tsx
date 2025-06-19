@@ -118,9 +118,8 @@ export default function FooterSection() {
                   <FileText className="w-4 h-4" />
                   Terms of Service
                 </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="text-muted-foreground hover:text-foreground transition-colors">
+              </li>              <li>
+                <Link to="/refunds" className="text-muted-foreground hover:text-foreground transition-colors">
                   Refund Policy
                 </Link>
               </li>
