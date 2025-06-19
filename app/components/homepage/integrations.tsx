@@ -64,7 +64,7 @@ export default function IntegrationsSection({
               <Badge variant="secondary" className="px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800">
                 <Youtube className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">#1 AI Viral Script Writer for YouTube Creators</span>
-                <span className="sm:hidden">AI Viral Script Writer</span>
+                <span className="sm:hidden">#1 AI Viral Script Writer</span>
               </Badge>
             </div>
 
