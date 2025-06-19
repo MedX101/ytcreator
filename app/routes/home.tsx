@@ -11,7 +11,7 @@ import type { Route } from "./+types/home";
 export function meta({}: Route.MetaArgs) {
   const title = "YTCreator - AI-Powered YouTube Script Generator | Clone Your Writing Style";
   const description =
-    "Transform any YouTube video into your personal writing style with AI. Transcribe, analyze, and generate scripts that sound exactly like you. Start creating authentic content at scale.";
+    "Stop spending hours writing scripts that sound like boring robots. Copy the exact writing style of any viral creator and watch your views explode.";
   const keywords = "YouTube, AI Script Generator, Content Creation, Video Transcription, AI Writing, YouTube Creator Tools, Script Writing, Content Marketing";
   const siteUrl = "https://ytcreator.me/";
   const imageUrl =
@@ -46,9 +46,8 @@ export function meta({}: Route.MetaArgs) {
     {
       name: "keywords",
       content: keywords,
-    },
-    { name: "author", content: "YTCreator Team" },
-    { name: "favicon", content: imageUrl },
+    },    { name: "author", content: "YTCreator Team" },
+    { name: "favicon", content: "https://ytcreator.me/favicon.png" },
   ];
 }
 
