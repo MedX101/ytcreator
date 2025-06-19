@@ -61,8 +61,7 @@ export default function ContentSection() {
           
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-red-500">❌ What Other AI Tools Give You:</h3>
+              <div className="space-y-4">                <h3 className="text-2xl font-bold text-red-500">❌ What Other AI Tools Give You:</h3>
                 <ul className="space-y-3 text-lg text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 mt-1">•</span>
@@ -80,13 +79,20 @@ export default function ContentSection() {
                     <span className="text-red-500 mt-1">•</span>
                     <span>Zero personality or unique voice</span>
                   </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-500 mt-1">•</span>
+                    <span>Hours wasted rewriting and editing bland content</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-500 mt-1">•</span>
+                    <span>Low view counts and poor audience retention</span>
+                  </li>
                 </ul>
               </div>
             </div>
             
             <div className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-green-500">✅ What YTCreator Gives You:</h3>
+              <div className="space-y-4">                <h3 className="text-2xl font-bold text-green-500">✅ What YTCreator Gives You:</h3>
                 <ul className="space-y-3 text-lg text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">•</span>
@@ -103,6 +109,14 @@ export default function ContentSection() {
                   <li className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">•</span>
                     <span>Unique personality that stands out from the crowd</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-500 mt-1">•</span>
+                    <span>10x faster content creation - ready to publish scripts</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-500 mt-1">•</span>
+                    <span>Higher engagement and viral potential for every video</span>
                   </li>
                 </ul>
               </div>
