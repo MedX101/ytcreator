@@ -46,8 +46,9 @@ export function meta({}: Route.MetaArgs) {
     {
       name: "keywords",
       content: keywords,
-    },    { name: "author", content: "YTCreator Team" },
-    { name: "favicon", content: "https://ytcreator.me/favicon.png" },
+    },
+    { name: "author", content: "YTCreator Team" },
+    { name: "favicon", content: imageUrl },
   ];
 }
 
