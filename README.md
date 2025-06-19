@@ -236,4 +236,4 @@ MIT License - Feel free to use this as a foundation for your own YouTube content
 
 **🎬 Transform your YouTube content creation with AI-powered style analysis and script generation.**
 
-Built with ❤️ using React Router v7, Convex, Google Gemini AI, and modern web technologies.
+Built with ❤️ using React Router v7, Convex, Google Gemini AI, and modern web technologies. 
