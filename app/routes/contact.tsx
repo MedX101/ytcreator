@@ -28,7 +28,7 @@ export default function Contact() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">              <Button asChild variant="ghost" size="sm">
                 <Link to="/support">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 mr-0 sm:mr-2" />
                   <span className="hidden sm:inline-block">Back to Support</span>
                   <span className="inline-block sm:hidden">Back</span>
                 </Link>
@@ -74,7 +74,7 @@ export default function Contact() {
                 </a>
               </Button>              <Button asChild variant="outline">
                 <Link to="/support">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 mr-0 sm:mr-2" />
                   <span className="hidden sm:inline-block">Back to Support</span>
                   <span className="inline-block sm:hidden">Back</span>
                 </Link>
