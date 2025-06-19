@@ -374,7 +374,7 @@ export default function ContentSection() {
                 <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
               </Link>
             </Button>            <p className="text-muted-foreground mt-4 text-lg">
-              Stop losing viewers to boring content • Start creating viral scripts today
+              Stop losing viewers to boring content • Start creating viral scripts today!
             </p>
           </div>
         </div>
