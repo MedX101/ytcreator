@@ -61,7 +61,7 @@ export default function DemoSection() {
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </Link>
           </Button>
-          <p className="text-muted-foreground mt-4">Join 25,000+ creators • Start creating today</p>
+          <p className="text-muted-foreground mt-4">Clone MrBeast's style in minutes • Your first viral script awaits</p>
         </div>
       </div>
     </section>
