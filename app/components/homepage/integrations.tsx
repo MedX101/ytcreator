@@ -61,9 +61,10 @@ export default function IntegrationsSection({
         <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32 lg:py-48">
           <div className="text-center space-y-10">            {/* Badge */}
             <div className="flex justify-center">
-              <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800">
-                <Youtube className="w-4 h-4 mr-2" />
-                #1 AI Viral Script Writer for YouTube Creators
+              <Badge variant="secondary" className="px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800">
+                <Youtube className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">#1 AI Viral Script Writer for YouTube Creators</span>
+                <span className="sm:hidden">AI Viral Script Writer</span>
               </Badge>
             </div>
 
