@@ -351,14 +351,13 @@ export default function ContentSection() {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          </div>
-
-          <div className="text-center mt-16">
-            <Button size="lg" className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all" asChild>
-              <Link to="/sign-up">
-                <Sparkles className="w-6 h-6 mr-3" />
-                Start Creating Viral Scripts Now
-                <ChevronRight className="w-6 h-6 ml-3" />
+          </div>          <div className="text-center mt-16">
+            <Button size="lg" className="px-6 sm:px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all max-w-full" asChild>
+              <Link to="/sign-up" className="flex items-center justify-center flex-wrap gap-2">
+                <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="whitespace-nowrap">Start Creating</span>
+                <span className="hidden sm:inline whitespace-nowrap">Viral Scripts Now</span>
+                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
               </Link>
             </Button>
             <p className="text-muted-foreground mt-4 text-lg">
