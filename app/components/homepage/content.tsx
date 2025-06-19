@@ -170,8 +170,8 @@ export default function ContentSection() {
                 <InteractiveFeatureCard
                   icon={<Youtube className="w-8 h-8 text-red-500" />}
                   title="Any Creator, Any Niche"
-                  description="Analyze videos from gaming, finance, cooking, beauty, or any other niche"
-                  hoverContent="Works with MrBeast, Emma Chamberlain, PewDiePie, and 10M+ other creators"
+                  description="Analyze videos from viral documentary, finance or any other niche"
+                  hoverContent="Works with Faceless Channels, MrBeast, Emma Chamberlain, PewDiePie, and 10M+ other creators"
                   stats="10M+ creators analyzed"
                 />
                 <InteractiveFeatureCard
