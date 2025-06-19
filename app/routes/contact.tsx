@@ -11,11 +11,11 @@ import {
   MessageSquare, 
   Clock, 
   ArrowLeft,
-  Send,
-  HelpCircle,
+  Send,  HelpCircle,
   Bug,
   CreditCard,
-  Feature,
+  Star,
+  Play,
   AlertCircle
 } from "lucide-react";
 
@@ -126,10 +126,9 @@ export default function Contact() {
                             <CreditCard className="w-4 h-4" />
                             Billing Issue
                           </div>
-                        </SelectItem>
-                        <SelectItem value="feature">
+                        </SelectItem>                        <SelectItem value="feature">
                           <div className="flex items-center gap-2">
-                            <Feature className="w-4 h-4" />
+                            <Star className="w-4 h-4" />
                             Feature Request
                           </div>
                         </SelectItem>
@@ -217,9 +216,8 @@ export default function Contact() {
                     Getting Started Guide
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link to="/help#features">
-                    <Feature className="w-4 h-4 mr-2" />
+                <Button asChild variant="outline" size="sm" className="w-full justify-start">                  <Link to="/help#features">
+                    <Star className="w-4 h-4 mr-2" />
                     Feature Documentation
                   </Link>
                 </Button>
@@ -229,9 +227,8 @@ export default function Contact() {
                     Billing Questions
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link to="/tutorials">
-                    <Feature className="w-4 h-4 mr-2" />
+                <Button asChild variant="outline" size="sm" className="w-full justify-start">                  <Link to="/tutorials">
+                    <Play className="w-4 h-4 mr-2" />
                     Video Tutorials
                   </Link>
                 </Button>
