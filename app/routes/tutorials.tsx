@@ -31,9 +31,8 @@ export default function Tutorials() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">              <Button asChild variant="ghost" size="sm">
                 <Link to="/support">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Back to Support</span>
-                  <span className="sm:hidden">Back</span>
+                  <ArrowLeft className="w-4 h-4 mr-2" />                  <span className="hidden sm:inline-block">Back to Support</span>
+                  <span className="inline-block sm:hidden">Back</span>
                 </Link>
               </Button>
               <div className="h-6 w-px bg-border" />

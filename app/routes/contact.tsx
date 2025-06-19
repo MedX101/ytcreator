@@ -29,8 +29,8 @@ export default function Contact() {
             <div className="flex items-center space-x-4">              <Button asChild variant="ghost" size="sm">
                 <Link to="/support">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Back to Support</span>
-                  <span className="sm:hidden">Back</span>
+                  <span className="hidden sm:inline-block">Back to Support</span>
+                  <span className="inline-block sm:hidden">Back</span>
                 </Link>
               </Button>
               <div className="h-6 w-px bg-border" />
@@ -72,11 +72,11 @@ export default function Contact() {
                   <Mail className="w-4 h-4 mr-2" />
                   Send Email
                 </a>
-              </Button>
-              <Button asChild variant="outline">
+              </Button>              <Button asChild variant="outline">
                 <Link to="/support">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Support
+                  <span className="hidden sm:inline-block">Back to Support</span>
+                  <span className="inline-block sm:hidden">Back</span>
                 </Link>
               </Button>
             </div>          </div>
