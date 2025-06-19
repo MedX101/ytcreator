@@ -118,6 +118,14 @@ export const Navbar = ({
                   ))}
                 </ul>
               </div>              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                <Link
+                  to="https://github.com/yourusername/ytcreator"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center"
+                >
+                  <Github className="w-5 h-5" />
+                </Link>
                 {loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3">
                     <Button asChild size="sm">
@@ -142,7 +150,7 @@ export const Navbar = ({
                     <Button
                       asChild
                       size="sm"
-                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled && "lg:hidden")}
+                      className={cn(isScrolled && "lg:hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>Sign Up</span>
@@ -151,7 +159,7 @@ export const Navbar = ({
                     <Button
                       asChild
                       size="sm"
-                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled ? "lg:inline-flex" : "hidden")}
+                      className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>{dashboardText}</span>
