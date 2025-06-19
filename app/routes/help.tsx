@@ -38,7 +38,7 @@ export default function Help() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">              <Button asChild variant="ghost" size="sm">
                 <Link to="/support">
-                  <ArrowLeft className="w-4 h-4 mr-0 sm:mr-2" />                  <span className="hidden sm:inline-block">Back to Support</span>
+                  <ArrowLeft className="w-4 h-4 mr-2" />                  <span className="hidden sm:inline-block">Back to Support</span>
                   <span className="inline-block sm:hidden">Back</span>
                 </Link>
               </Button>
@@ -75,10 +75,10 @@ export default function Help() {
         {/* FAQ Tabs */}
         <Tabs defaultValue="getting-started" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
+            <TabsTrigger value="getting-started">Started</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="billing">Billing</TabsTrigger>
-            <TabsTrigger value="issues">Issues</TabsTrigger>
+            <TabsTrigger value="troubleshooting">Troubleshooting</TabsTrigger>
           </TabsList>
 
           <TabsContent value="getting-started" className="mt-8">
@@ -313,7 +313,7 @@ export default function Help() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="w-5 h-5 text-purple-500" />
-                  Issues
+                  Troubleshooting
                 </CardTitle>
                 <CardDescription>
                   Common issues and how to resolve them.
