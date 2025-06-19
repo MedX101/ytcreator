@@ -373,9 +373,8 @@ export default function ContentSection() {
                 <span className="hidden sm:inline whitespace-nowrap">Viral Scripts Now</span>
                 <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
               </Link>
-            </Button>
-            <p className="text-muted-foreground mt-4 text-lg">
-              Join 25,000+ creators • Start your journey today
+            </Button>            <p className="text-muted-foreground mt-4 text-lg">
+              Stop losing viewers to boring content • Start creating viral scripts today
             </p>
           </div>
         </div>
