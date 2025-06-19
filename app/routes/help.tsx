@@ -78,7 +78,7 @@ export default function Help() {
             <TabsTrigger value="getting-started">Started</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="billing">Billing</TabsTrigger>
-            <TabsTrigger value="troubleshooting">Troubleshooting</TabsTrigger>
+            <TabsTrigger value="troubleshooting">Issues</TabsTrigger>
           </TabsList>
 
           <TabsContent value="getting-started" className="mt-8">
