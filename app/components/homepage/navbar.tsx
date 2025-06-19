@@ -146,11 +146,10 @@ export const Navbar = ({
                       <Link to="/sign-in" prefetch="viewport">
                         <span>Login</span>
                       </Link>
-                    </Button>
-                    <Button
+                    </Button>                    <Button
                       asChild
                       size="sm"
-                      className={cn(isScrolled && "lg:hidden")}
+                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled && "lg:hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>Sign Up</span>
@@ -159,7 +158,7 @@ export const Navbar = ({
                     <Button
                       asChild
                       size="sm"
-                      className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                      className={cn("bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700", isScrolled ? "lg:inline-flex" : "hidden")}
                     >
                       <Link to="/sign-up" prefetch="viewport">
                         <span>{dashboardText}</span>
