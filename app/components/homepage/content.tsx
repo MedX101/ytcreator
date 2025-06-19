@@ -379,36 +379,34 @@ export default function ContentSection() {
             </p>
           </div>
         </div>
-      </section>
-
-      {/* Social Proof Section */}
+      </section>      {/* Psychological Sales Section */}
       <section className="py-20 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              Join 25,000+ Creators Getting Better Results
+              Every Day You Wait, Your Competition Gets Ahead
             </h2>
             
             <div className="grid gap-8 md:grid-cols-4 mb-12">
-              <StatCard
-                icon={<Eye className="w-8 h-8 text-blue-500" />}
-                number="500M+"
-                label="Total Views Generated"
+              <PainCard
+                icon={<Clock className="w-8 h-8 text-red-500" />}
+                title="Hours Wasted Daily"
+                description="Writing scripts that get no views"
               />
-              <StatCard
-                icon={<ThumbsUp className="w-8 h-8 text-green-500" />}
-                number="15M+"
-                label="Likes from Our Scripts"
+              <PainCard
+                icon={<TrendingUp className="w-8 h-8 text-orange-500" />}
+                title="Viral Creators"
+                description="Using AI to dominate your niche"
               />
-              <StatCard
-                icon={<MessageSquare className="w-8 h-8 text-purple-500" />}
-                number="2M+"
-                label="Engaging Comments"
+              <PainCard
+                icon={<Users className="w-8 h-8 text-purple-500" />}
+                title="Your Audience"
+                description="Watching your competitors instead"
               />
-              <StatCard
-                icon={<TrendingUp className="w-8 h-8 text-red-500" />}
-                number="300%"
-                label="Average CTR Increase"
+              <PainCard
+                icon={<Target className="w-8 h-8 text-green-500" />}
+                title="Your Dreams"
+                description="Slipping away with each bad script"
               />
             </div>
           </div>
@@ -515,6 +513,24 @@ function StatCard({
       <div className="flex justify-center">{icon}</div>
       <div className="text-3xl font-bold">{number}</div>
       <div className="text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function PainCard({ 
+  icon, 
+  title, 
+  description 
+}: { 
+  icon: React.ReactNode; 
+  title: string; 
+  description: string;
+}) {
+  return (
+    <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 border border-border/50 hover:border-red-200 transition-colors">
+      <div className="flex justify-center">{icon}</div>
+      <div className="text-xl font-bold text-foreground">{title}</div>
+      <div className="text-muted-foreground">{description}</div>
     </div>
   );
 }
