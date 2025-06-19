@@ -54,14 +54,14 @@ export default function DemoSection() {
         </div>        {/* CTA */}
         <div className="text-center">
           <Button size="lg" className="px-6 sm:px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all max-w-full" asChild>
-            <Link to="/sign-up" className="flex items-center justify-center flex-wrap gap-2">
+            <Link to="/sign-up" className="flex items-center justify-center gap-2">
               <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
-              <span className="whitespace-nowrap">Try It Free</span>
+              <span className="whitespace-nowrap">Get Started</span>
               <span className="hidden sm:inline">- Clone Any Creator's Style</span>
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </Link>
           </Button>
-          <p className="text-muted-foreground mt-4">No credit card required • 3 free scripts to start</p>
+          <p className="text-muted-foreground mt-4">Join 25,000+ creators • Start creating today</p>
         </div>
       </div>
     </section>

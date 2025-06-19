@@ -353,7 +353,7 @@ export default function ContentSection() {
             </Accordion>
           </div>          <div className="text-center mt-16">
             <Button size="lg" className="px-6 sm:px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25 transform hover:scale-105 transition-all max-w-full" asChild>
-              <Link to="/sign-up" className="flex items-center justify-center flex-wrap gap-2">
+              <Link to="/sign-up" className="flex items-center justify-center gap-2">
                 <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="whitespace-nowrap">Start Creating</span>
                 <span className="hidden sm:inline whitespace-nowrap">Viral Scripts Now</span>
@@ -361,7 +361,7 @@ export default function ContentSection() {
               </Link>
             </Button>
             <p className="text-muted-foreground mt-4 text-lg">
-              Join 25,000+ creators • No credit card required • 3 free scripts to start
+              Join 25,000+ creators • Start your journey today
             </p>
           </div>
         </div>

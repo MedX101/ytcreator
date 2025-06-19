@@ -124,13 +124,12 @@ export default function IntegrationsSection({
                       : "/sign-up"
                   }
                   prefetch="viewport"
-                >
-                  <Zap className="w-6 h-6 mr-3" />
+                >                  <Zap className="w-6 h-6 mr-3" />
                   {loaderData?.isSignedIn
                     ? loaderData?.hasActiveSubscription
                       ? "Start Creating Now"
                       : "Choose Your Plan"
-                    : "Try Free - No Credit Card"}
+                    : "Get Started Today"}
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Link>
               </Button>
