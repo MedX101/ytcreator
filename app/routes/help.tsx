@@ -36,11 +36,11 @@ export default function Help() {
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto max-w-6xl px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button asChild variant="ghost" size="sm">
+            <div className="flex items-center space-x-4">              <Button asChild variant="ghost" size="sm">
                 <Link to="/support">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Support
+                  <span className="hidden sm:inline">Back to Support</span>
+                  <span className="sm:hidden">Back</span>
                 </Link>
               </Button>
               <div className="h-6 w-px bg-border" />
