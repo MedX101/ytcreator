@@ -78,7 +78,7 @@ export default function Help() {
             <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="billing">Billing</TabsTrigger>
-            <TabsTrigger value="troubleshooting">Troubleshooting</TabsTrigger>
+            <TabsTrigger value="issues">Issues</TabsTrigger>
           </TabsList>
 
           <TabsContent value="getting-started" className="mt-8">
@@ -313,7 +313,7 @@ export default function Help() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="w-5 h-5 text-purple-500" />
-                  Troubleshooting
+                  Issues
                 </CardTitle>
                 <CardDescription>
                   Common issues and how to resolve them.
