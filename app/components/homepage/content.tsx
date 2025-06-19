@@ -134,7 +134,7 @@ export default function ContentSection() {
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               The Only Tool You Need to{" "}
               <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                Master YouTube
+                Dominate YouTube
               </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
