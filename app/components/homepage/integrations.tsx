@@ -79,10 +79,9 @@ export default function IntegrationsSection({
                 <span className="text-4xl sm:text-5xl lg:text-6xl text-muted-foreground">
                   Clone Any Creator's Style
                 </span>
-              </h1>
-              <p className="mx-auto max-w-4xl text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                Transform any YouTube video into scripts that <strong className="text-foreground">sound exactly like your favorite creators</strong>. 
-                Our AI analyzes their unique style and generates authentic content that gets views.
+              </h1>              <p className="mx-auto max-w-4xl text-xl md:text-2xl text-muted-foreground leading-relaxed">
+                Stop spending hours writing scripts that sound like <strong className="text-foreground">boring robots</strong>. 
+                Copy the exact writing style of any viral creator and watch your views explode.
               </p>
             </div>
 
