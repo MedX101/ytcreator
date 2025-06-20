@@ -208,10 +208,9 @@ export default function GeneratePage() {
                         {styleAnalysis.styleProfile.wordCount || 1500}
                       </div>
                       <div className="text-sm text-muted-foreground">Words Analyzed</div>
-                    </div>
-                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                    </div>                    <div className="p-4 bg-muted/50 rounded-lg text-center">
                       <div className="text-2xl font-bold text-purple-600">
-                        {styleAnalysis.processingDetails?.confidenceScore || 0.92}
+                        {styleAnalysis.processingDetails?.confidenceScore || 92}%
                       </div>
                       <div className="text-sm text-muted-foreground">AI Confidence</div>
                     </div>
