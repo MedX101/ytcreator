@@ -190,24 +190,33 @@ const analyzeStyle = useAction(api.youtube.analyzeStyle);
                 <div
                   key={transcript._id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="space-y-1">
+                >                  <div className="space-y-1">
                     <h3 className="font-medium">
-                      {transcript.title || "Untitled Video"}
+                      {transcript.metadata?.videoTitle || transcript.title || "Untitled Video"}
                     </h3>
+                    {transcript.metadata?.channelName && (
+                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                        by {transcript.metadata.channelName}
+                      </p>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       {transcript.youtubeUrl}
                     </p>
                     <div className="flex items-center gap-2">
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         transcript.status === 'completed' 
-                          ? 'bg-green-100 text-green-800' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
                           : transcript.status === 'failed'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
                       }`}>
                         {transcript.status}
                       </span>
+                      {transcript.metadata?.createdAt && (
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(transcript.metadata.createdAt).toLocaleDateString()}
+                        </span>
+                      )}
                     </div>
                   </div>
                   {transcript.status === 'completed' && (

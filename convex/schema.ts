@@ -49,11 +49,11 @@ export default defineSchema({
     metadata: v.optional(v.any()),
   })
     .index("userId", ["userId"])
-    .index("status", ["status"]),
-  styleAnalyses: defineTable({
+    .index("status", ["status"]),  styleAnalyses: defineTable({
     transcriptId: v.id("transcripts"),
     userId: v.string(),
     styleProfile: v.object({
+      // Basic style characteristics  
       hasIntro: v.boolean(),
       hasOutro: v.boolean(),
       humorTypes: v.array(v.string()),
@@ -64,11 +64,47 @@ export default defineSchema({
       catchphrases: v.array(v.string()),
       transitionWords: v.array(v.string()),
       addressingStyle: v.string(), // "direct", "conversational", etc.
+      
+      // ENHANCED METRICS - Real analytics that impress users
+      wordCount: v.optional(v.number()),
+      sentenceCount: v.optional(v.number()),
+      paragraphCount: v.optional(v.number()),
+      avgSentenceLength: v.optional(v.number()),
+      readingTimeMinutes: v.optional(v.number()),
+      complexityScore: v.optional(v.number()),
+      
+      // Calculated engagement metrics
+      questionFrequency: v.optional(v.number()),
+      emphasisUsage: v.optional(v.number()),
+      personalPronouns: v.optional(v.number()),
+      
+      // Advanced linguistic analysis
+      technicalTerms: v.optional(v.number()),
+      uniqueVocabulary: v.optional(v.number()),
+      sentimentScore: v.optional(v.number()),
+      
+      // Content structure insights
+      introLength: v.optional(v.number()),
+      conclusionLength: v.optional(v.number()),
+      transitionDensity: v.optional(v.number()),
+      
+      // Psychological profile metrics
+      authorityLevel: v.optional(v.string()),
+      authenticityMarkers: v.optional(v.number()),
+      energyLevel: v.optional(v.string()),
     }),
     detailedAnalysis: v.string(),
+    enhancedMetrics: v.optional(v.string()),
+    processingDetails: v.optional(v.object({
+      analyzedAt: v.number(),
+      processingTimeMs: v.number(),
+      confidenceScore: v.number(),
+      patternsDetected: v.number(),
+      linguisticFeatures: v.number(),
+    })),
   })
     .index("transcriptId", ["transcriptId"])
-    .index("userId", ["userId"]),  generatedScripts: defineTable({
+    .index("userId", ["userId"]),generatedScripts: defineTable({
     userId: v.string(),
     transcriptId: v.optional(v.id("transcripts")),
     styleAnalysisId: v.optional(v.id("styleAnalyses")),

@@ -16,6 +16,14 @@
       "routes/pricing": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/success": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/subscription-required": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/support": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/help": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/contact": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/tutorials": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/community": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/privacy": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/terms": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/refunds": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/chat": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/settings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
@@ -82,6 +90,78 @@
         "parentId": "root",
         "file": "app/routes/subscription-required.tsx",
         "path": "subscription-required",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/support": {
+        "id": "routes/support",
+        "parentId": "root",
+        "file": "app/routes/support.tsx",
+        "path": "support",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/help": {
+        "id": "routes/help",
+        "parentId": "root",
+        "file": "app/routes/help.tsx",
+        "path": "help",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/contact": {
+        "id": "routes/contact",
+        "parentId": "root",
+        "file": "app/routes/contact.tsx",
+        "path": "contact",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/tutorials": {
+        "id": "routes/tutorials",
+        "parentId": "root",
+        "file": "app/routes/tutorials.tsx",
+        "path": "tutorials",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/community": {
+        "id": "routes/community",
+        "parentId": "root",
+        "file": "app/routes/community.tsx",
+        "path": "community",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/privacy": {
+        "id": "routes/privacy",
+        "parentId": "root",
+        "file": "app/routes/privacy.tsx",
+        "path": "privacy",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/terms": {
+        "id": "routes/terms",
+        "parentId": "root",
+        "file": "app/routes/terms.tsx",
+        "path": "terms",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/refunds": {
+        "id": "routes/refunds",
+        "parentId": "root",
+        "file": "app/routes/refunds.tsx",
+        "path": "refunds",
         "config": {
           "runtime": "nodejs"
         }
@@ -167,9 +247,9 @@
     }
   },
   "reactRouterConfig": {
-    "appDirectory": "C:/Users/MedX/Desktop/ytcreator/app",
+    "appDirectory": "C:/Users/Dakalo/Desktop/ytcreator/app",
     "basename": "/",
-    "buildDirectory": "C:/Users/MedX/Desktop/ytcreator/build",
+    "buildDirectory": "C:/Users/Dakalo/Desktop/ytcreator/build",
     "future": {
       "unstable_middleware": false,
       "unstable_optimizeDeps": false,
@@ -218,6 +298,54 @@
         "parentId": "root",
         "file": "routes/subscription-required.tsx",
         "path": "subscription-required"
+      },
+      "routes/support": {
+        "id": "routes/support",
+        "parentId": "root",
+        "file": "routes/support.tsx",
+        "path": "support"
+      },
+      "routes/help": {
+        "id": "routes/help",
+        "parentId": "root",
+        "file": "routes/help.tsx",
+        "path": "help"
+      },
+      "routes/contact": {
+        "id": "routes/contact",
+        "parentId": "root",
+        "file": "routes/contact.tsx",
+        "path": "contact"
+      },
+      "routes/tutorials": {
+        "id": "routes/tutorials",
+        "parentId": "root",
+        "file": "routes/tutorials.tsx",
+        "path": "tutorials"
+      },
+      "routes/community": {
+        "id": "routes/community",
+        "parentId": "root",
+        "file": "routes/community.tsx",
+        "path": "community"
+      },
+      "routes/privacy": {
+        "id": "routes/privacy",
+        "parentId": "root",
+        "file": "routes/privacy.tsx",
+        "path": "privacy"
+      },
+      "routes/terms": {
+        "id": "routes/terms",
+        "parentId": "root",
+        "file": "routes/terms.tsx",
+        "path": "terms"
+      },
+      "routes/refunds": {
+        "id": "routes/refunds",
+        "parentId": "root",
+        "file": "routes/refunds.tsx",
+        "path": "refunds"
       },
       "routes/dashboard/layout": {
         "id": "routes/dashboard/layout",
