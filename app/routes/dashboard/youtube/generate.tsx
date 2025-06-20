@@ -37,11 +37,11 @@ export default function GeneratePage() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
   const transcriptId = searchParams.get("transcript");
-  
-  const [topic, setTopic] = useState("");
+    const [topic, setTopic] = useState("");
   const [length, setLength] = useState("medium");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [generatedScript, setGeneratedScript] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -60,16 +60,18 @@ export default function GeneratePage() {
   const styleAnalysis = styleAnalyses?.find(
     analysis => analysis.transcriptId === transcriptId
   );
-
   useEffect(() => {
-    if (transcript && !styleAnalysis && userId) {
+    if (transcript && !styleAnalysis && userId && !isAnalyzing) {
       // Auto-analyze style if not done yet
       handleAnalyzeStyle();
     }
-  }, [transcript, styleAnalysis, userId]);
+  }, [transcript, styleAnalysis, userId, isAnalyzing]);
 
   const handleAnalyzeStyle = async () => {
     if (!transcriptId || !userId) return;
+
+    setIsAnalyzing(true);
+    setError("");
 
     try {
       await analyzeStyle({
@@ -77,6 +79,8 @@ export default function GeneratePage() {
       });
     } catch (err: any) {
       setError(err.message || "Failed to analyze style");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -193,7 +197,43 @@ export default function GeneratePage() {
                 </div>
               </div>
 
-              {styleAnalysis && (
+              {/* Style Analysis Content */}
+              {isAnalyzing ? (
+                <div className="space-y-6">
+                  {/* Loading State */}
+                  <div className="text-center py-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
+                      <Loader2Icon className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Analyzing Your Style...</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                      Our AI is performing deep analysis of your content style, tone, and patterns. This may take a moment.
+                    </p>
+                  </div>
+
+                  {/* Loading Skeleton */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="p-4 bg-muted/50 rounded-lg text-center animate-pulse">
+                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="space-y-3 animate-pulse">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                        <div className="space-y-2">
+                          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : styleAnalysis ? (
                 <div className="space-y-6">
                   {/* Core Style Profile */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -330,9 +370,7 @@ export default function GeneratePage() {
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Processing Info */}
+                  </div>                  {/* Processing Info */}
                   {styleAnalysis.processingDetails && (
                     <div className="text-xs text-muted-foreground text-center p-3 bg-muted/30 rounded border-l-4 border-blue-500">
                       ✨ Analysis completed in {styleAnalysis.processingDetails.processingTimeMs}ms • 
@@ -340,6 +378,16 @@ export default function GeneratePage() {
                       Processed at {new Date(styleAnalysis.processingDetails.analyzedAt).toLocaleString()}
                     </div>
                   )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg mb-4">
+                    <SparklesIcon className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Ready to Analyze</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Style analysis will begin automatically when the transcript is ready.
+                  </p>
                 </div>
               )}
             </div>
