@@ -122,10 +122,9 @@ export const Navbar = ({
                   className="flex items-center justify-center sm:hidden"
                 >
                   <Youtube className="w-5 h-5" />
-                </Link>
-                {loaderData?.isSignedIn ? (
+                </Link>                {loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3">
-                    <Button asChild size="sm">
+                    <Button asChild size="sm" className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
                       <Link to={dashboardLink} prefetch="viewport">
                         <span>{dashboardText}</span>
                       </Link>
