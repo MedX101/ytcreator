@@ -119,7 +119,7 @@ export const Navbar = ({
                   to="https://www.youtube.com/@SkynticSA"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center sm:hidden"
                 >
                   <Youtube className="w-5 h-5" />
                 </Link>
