@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YT Logo Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .logo-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 20px;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            font-family: Arial, sans-serif;
+        }
+        .sizes {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .size-container {
+            text-align: center;
+        }
+        .size-16 { width: 16px; height: 16px; font-size: 7px; border-radius: 3px; }
+        .size-32 { width: 32px; height: 32px; font-size: 14px; border-radius: 6px; }
+        .size-64 { width: 64px; height: 64px; font-size: 28px; border-radius: 12px; }
+        .size-128 { width: 128px; height: 128px; font-size: 56px; border-radius: 24px; }
+    </style>
+</head>
+<body>
+    <h1>YTCreator Logo - Different Sizes</h1>
+    <p>Right-click on any logo below and "Save image as..." to get the PNG version:</p>
+    
+    <div class="sizes">
+        <div class="size-container">
+            <div class="logo-container">
+                <div class="logo size-16">YT</div>
+            </div>
+            <p>16x16 (favicon)</p>
+        </div>
+        
+        <div class="size-container">
+            <div class="logo-container">
+                <div class="logo size-32">YT</div>
+            </div>
+            <p>32x32 (favicon)</p>
+        </div>
+        
+        <div class="size-container">
+            <div class="logo-container">
+                <div class="logo size-64">YT</div>
+            </div>
+            <p>64x64 (standard)</p>
+        </div>
+        
+        <div class="size-container">
+            <div class="logo-container">
+                <div class="logo size-128">YT</div>
+            </div>
+            <p>128x128 (high-res)</p>
+        </div>
+    </div>
+
+    <h2>Instructions:</h2>
+    <ol>
+        <li>Open this HTML file in your browser</li>
+        <li>Right-click on the logo size you want</li>
+        <li>Select "Save image as..." or "Copy image"</li>
+        <li>Save as PNG format</li>
+        <li>Replace the favicon.png or rsk.png in your /public folder</li>
+    </ol>
+    
+    <h2>Alternative Method:</h2>
+    <p>You can also take a screenshot of the logo above and crop it to the desired size using any image editor.</p>
+</body>
+</html>
