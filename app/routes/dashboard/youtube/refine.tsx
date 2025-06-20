@@ -34,6 +34,79 @@ import {
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 
+// Function to format analysis text with proper structure
+const formatAnalysisText = (text: string) => {
+  if (!text) return null;
+  
+  // Split into sentences and paragraphs
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const elements = [];
+  
+  let currentSection = "";
+  let sectionContent = [];
+  
+  sentences.forEach((sentence, index) => {
+    const trimmed = sentence.trim();
+    if (!trimmed) return;
+    
+    // Check if this looks like a section header (contains keywords)
+    const isHeader = /^(The|This|Overall|In terms of|Regarding|When it comes to|The creator|The content|Analysis shows)/i.test(trimmed);
+    
+    if (isHeader && sectionContent.length > 0) {
+      // Push previous section
+      if (currentSection) {
+        elements.push(
+          <div key={`section-${elements.length}`} className="mb-4">
+            <h4 className="font-semibold text-foreground mb-2">{currentSection}</h4>
+            <div className="pl-3 border-l-2 border-primary/20 space-y-1">
+              {sectionContent.map((content, idx) => (
+                <p key={idx} className="text-muted-foreground text-sm">{content}.</p>
+              ))}
+            </div>
+          </div>
+        );
+      }
+      
+      // Start new section
+      currentSection = trimmed;
+      sectionContent = [];
+    } else {
+      // Add to current section
+      if (isHeader) {
+        currentSection = trimmed;
+      } else {
+        sectionContent.push(trimmed);
+      }
+    }
+    
+    // If it's the last sentence, push the final section
+    if (index === sentences.length - 1 && sectionContent.length > 0) {
+      elements.push(
+        <div key={`section-${elements.length}`} className="mb-4">
+          {currentSection && <h4 className="font-semibold text-foreground mb-2">{currentSection}</h4>}
+          <div className="pl-3 border-l-2 border-primary/20 space-y-1">
+            {sectionContent.map((content, idx) => (
+              <p key={idx} className="text-muted-foreground text-sm">{content}.</p>
+            ))}
+          </div>
+        </div>
+      );
+    }
+  });
+  
+  // If no structured sections found, fall back to paragraph formatting
+  if (elements.length === 0) {
+    const paragraphs = text.split(/\n\n|\. {2,}/).filter(p => p.trim().length > 0);
+    return paragraphs.map((paragraph, index) => (
+      <div key={index} className="mb-3">
+        <p className="text-muted-foreground text-sm leading-relaxed">{paragraph.trim()}.</p>
+      </div>
+    ));
+  }
+  
+  return elements;
+};
+
 export default function RefinePage() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
@@ -382,10 +455,11 @@ export default function RefinePage() {
                         )}
                       </Button>
                     </div>
-                    
-                    {isAnalysisExpanded && (
+                      {isAnalysisExpanded && (
                       <div className="p-4 bg-muted/50 rounded-lg">
-                        <p className="text-sm leading-relaxed">{styleAnalysis.detailedAnalysis}</p>
+                        <div className="text-sm leading-relaxed space-y-4">
+                          {formatAnalysisText(styleAnalysis.detailedAnalysis)}
+                        </div>
                       </div>
                     )}
                     
