@@ -199,40 +199,210 @@ export default function RefinePage() {
                 </SelectContent>
               </Select>
             </div>
-          )}
+          )}          {selectedTranscript && styleAnalysis && (
+            <div className="mt-6 space-y-6">
+              {/* Advanced AI Analysis Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <SparklesIcon className="w-5 h-5 text-purple-500" />
+                    Advanced AI Analysis
+                  </CardTitle>
+                  <CardDescription>
+                    Sophisticated analysis of the creator's unique writing style and patterns
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Processing Details */}
+                  {styleAnalysis.processingDetails && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {styleAnalysis.processingDetails.confidenceScore}%
+                        </div>
+                        <div className="text-sm text-muted-foreground">AI Confidence</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {styleAnalysis.processingDetails.patternsDetected}
+                        </div>
+                        <div className="text-sm text-muted-foreground">Patterns Detected</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          {styleAnalysis.processingDetails.linguisticFeatures}
+                        </div>
+                        <div className="text-sm text-muted-foreground">Linguistic Features</div>
+                      </div>
+                    </div>
+                  )}
 
-          {selectedTranscript && styleAnalysis && (
-            <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-              <h4 className="font-medium mb-2">Style Profile:</h4>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Tone:</span> {styleAnalysis.styleProfile.toneDescription}
-                </div>
-                <div>
-                  <span className="font-medium">Vocabulary:</span> {styleAnalysis.styleProfile.vocabularyLevel}
-                </div>
-                <div>
-                  <span className="font-medium">Structure:</span> {styleAnalysis.styleProfile.sentenceStructure}
-                </div>
-                <div>
-                  <span className="font-medium">Pacing:</span> {styleAnalysis.styleProfile.pacingPattern}
-                </div>
-              </div>
-              {styleAnalysis.styleProfile.humorTypes.length > 0 && (
-                <div className="mt-2">
-                  <span className="font-medium">Humor Types:</span> {styleAnalysis.styleProfile.humorTypes.join(", ")}
-                </div>
-              )}
+                  {/* Core Style Metrics */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {styleAnalysis.styleProfile.wordCount && (
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <div className="text-lg font-semibold">{styleAnalysis.styleProfile.wordCount.toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground">Words</div>
+                      </div>
+                    )}
+                    {styleAnalysis.styleProfile.sentenceCount && (
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <div className="text-lg font-semibold">{styleAnalysis.styleProfile.sentenceCount}</div>
+                        <div className="text-xs text-muted-foreground">Sentences</div>
+                      </div>
+                    )}
+                    {styleAnalysis.styleProfile.complexityScore && (
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <div className="text-lg font-semibold">{styleAnalysis.styleProfile.complexityScore}%</div>
+                        <div className="text-xs text-muted-foreground">Complexity</div>
+                      </div>
+                    )}
+                    {styleAnalysis.styleProfile.readingTimeMinutes && (
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <div className="text-lg font-semibold">{styleAnalysis.styleProfile.readingTimeMinutes}m</div>
+                        <div className="text-xs text-muted-foreground">Read Time</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Style Characteristics */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">Communication Style</h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Tone</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.toneDescription}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Energy Level</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.energyLevel || 'Dynamic'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Authority Level</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.authorityLevel || 'Expert'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Addressing Style</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.addressingStyle}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">Writing Mechanics</h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Vocabulary Level</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.vocabularyLevel}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Sentence Structure</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.sentenceStructure}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Pacing Pattern</span>
+                          <span className="text-sm font-medium">{styleAnalysis.styleProfile.pacingPattern}</span>
+                        </div>
+                        {styleAnalysis.styleProfile.avgSentenceLength && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Avg Sentence Length</span>
+                            <span className="text-sm font-medium">{styleAnalysis.styleProfile.avgSentenceLength} words</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Signature Elements */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">Signature Elements</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {styleAnalysis.styleProfile.catchphrases?.length > 0 && (
+                        <div>
+                          <div className="text-sm font-medium mb-2">Catchphrases & Key Terms</div>
+                          <div className="flex flex-wrap gap-1">
+                            {styleAnalysis.styleProfile.catchphrases.slice(0, 6).map((phrase, index) => (
+                              <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                {phrase}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {styleAnalysis.styleProfile.transitionWords?.length > 0 && (
+                        <div>
+                          <div className="text-sm font-medium mb-2">Transition Patterns</div>
+                          <div className="flex flex-wrap gap-1">
+                            {styleAnalysis.styleProfile.transitionWords.slice(0, 6).map((word, index) => (
+                              <span key={index} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                {word}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {styleAnalysis.styleProfile.humorTypes?.length > 0 && (
+                      <div>
+                        <div className="text-sm font-medium mb-2">Humor & Engagement Style</div>
+                        <div className="flex flex-wrap gap-1">
+                          {styleAnalysis.styleProfile.humorTypes.map((type, index) => (
+                            <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                              {type}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Detailed Analysis Summary */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">AI Analysis Summary</h4>
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <p className="text-sm leading-relaxed">{styleAnalysis.detailedAnalysis}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )}
-
-          {selectedTranscript && !styleAnalysis && (
-            <Alert>
-              <SparklesIcon className="w-4 h-4" />
-              <AlertDescription>
-                Analyzing writing style... This may take a moment.
-              </AlertDescription>
-            </Alert>
+          )}          {selectedTranscript && !styleAnalysis && (
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <SparklesIcon className="w-5 h-5 text-purple-500 animate-pulse" />
+                    Advanced AI Analysis
+                  </CardTitle>
+                  <CardDescription>
+                    Analyzing the creator's unique writing style and patterns...
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center space-y-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
+                        <Loader2Icon className="w-8 h-8 text-purple-600 animate-spin" />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="font-semibold">AI Analysis in Progress</h3>
+                        <p className="text-sm text-muted-foreground max-w-md">
+                          Our advanced AI is analyzing linguistic patterns, tone, vocabulary, and writing style...
+                        </p>
+                      </div>
+                      <div className="flex justify-center space-x-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           {completedTranscripts.length === 0 && (
