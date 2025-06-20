@@ -1,14 +1,5 @@
-import { 
-  BarChart3, 
-  PenTool, 
-  Youtube, 
-  Brain,
-  FileText,
-  Users,
-  Sparkles,
-  type LucideIcon
-} from "lucide-react";
-import { IconSettings } from "@tabler/icons-react";
+import { IconDashboard, IconSettings } from "@tabler/icons-react";
+import { MessageCircle, VideoIcon } from "lucide-react";
 import { Link } from "react-router";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
@@ -27,22 +18,17 @@ const data = {
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: BarChart3 as LucideIcon,
+      icon: IconDashboard,
     },
     {
-      title: "Create Scripts",
+      title: "YouTube Scripts",
       url: "/dashboard/youtube",
-      icon: PenTool as LucideIcon,
+      icon: VideoIcon,
     },
     {
-      title: "Analyze Creators",
-      url: "/dashboard/youtube",
-      icon: Brain as LucideIcon,
-    },
-    {
-      title: "My Scripts",
-      url: "/dashboard/youtube",
-      icon: FileText as LucideIcon,
+      title: "Chat",
+      url: "/dashboard/chat",
+      icon: MessageCircle,
     },
   ],
   navSecondary: [
@@ -62,16 +48,12 @@ export function AppSidebar({
   user: any;
 }) {
   return (
-    <Sidebar collapsible="offcanvas" variant={variant}>      <SidebarHeader>
+    <Sidebar collapsible="offcanvas" variant={variant}>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link to="/" prefetch="viewport" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">YT</span>
-              </div>
-              <span className="text-base font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                YTCreator
-              </span>
+            <Link to="/" prefetch="viewport">
+              <span className="text-base font-semibold">Ras Mic Inc.</span>
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>
