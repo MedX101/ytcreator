@@ -157,21 +157,17 @@ export default function IntegrationsSection({
               icon={<Brain className="w-12 h-12 text-purple-500" />}
               title="Psychological Pattern Recognition"
               description="Our AI identifies emotional triggers, storytelling arcs, and persuasion techniques used by top creators"
-              example="Detects how MrBeast builds suspense before big reveals"
               accent="purple"
             />
             <UniqueFeatureCard
               icon={<Wand2 className="w-12 h-12 text-orange-500" />}
               title="Hook & Retention Mastery"
               description="Extract the exact opening lines, transitions, and retention tactics that keep viewers watching"
-              example="Clone Emma Chamberlain's authentic conversational style"
-              accent="orange"
             />
             <UniqueFeatureCard
               icon={<TrendingUp className="w-12 h-12 text-green-500" />}
               title="Viral Formula Extraction"
               description="Reverse-engineer what made videos go viral and apply those patterns to your content"
-              example="Replicate PewDiePie's comedy timing and energy"
               accent="green"
             />
           </div>
@@ -185,13 +181,11 @@ const UniqueFeatureCard = memo(({
   icon,
   title,
   description,
-  example,
   accent,
 }: {
   icon: React.ReactNode;
   title: string;
   description: string;
-  example: string;
   accent: 'purple' | 'orange' | 'green';
 }) => {
   const accentColors = {
@@ -209,9 +203,6 @@ const UniqueFeatureCard = memo(({
       <div className="space-y-4">
         <h3 className="text-xl font-bold">{title}</h3>
         <p className="text-muted-foreground leading-relaxed">{description}</p>
-        <div className="bg-muted/50 rounded-lg p-3 text-sm italic text-muted-foreground border-l-4 border-current">
-          Example: {example}
-        </div>
       </div>
     </div>
   );
