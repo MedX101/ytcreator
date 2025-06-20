@@ -296,7 +296,7 @@ export default function Privacy() {
 
                 <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <p className="text-sm text-blue-700 dark:text-blue-300">
-                    To exercise any of these rights, please contact us at privacy@ytcreator.me 
+                    To exercise any of these rights, please contact us at hello@ytcreator.me 
                     or use the account settings in your dashboard.
                   </p>
                 </div>
@@ -357,7 +357,7 @@ export default function Privacy() {
               <p className="text-muted-foreground mb-4">
                 If you have questions about this Privacy Policy or how we handle your data, please contact us:
               </p>              <div className="space-y-2">
-                <p><strong>Email:</strong> privacy@ytcreator.me</p>
+                <p><strong>Email:</strong> hello@ytcreator.me</p>
                 <p><strong>Support:</strong> <a href="mailto:hello@ytcreator.me?subject=YTCreator Privacy Question" className="text-blue-600 hover:underline">Contact Support</a></p>
               </div>
 

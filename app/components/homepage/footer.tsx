@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Youtube, Twitter, Mail, HelpCircle, FileText, Shield } from "lucide-react";
+import { Youtube, Mail, HelpCircle, FileText, Shield } from "lucide-react";
 
 export default function FooterSection() {
   return (
@@ -18,10 +18,9 @@ export default function FooterSection() {
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               The #1 AI tool for YouTube creators to clone any creator's writing style and generate viral scripts.
-            </p>
-            <div className="flex space-x-3">
+            </p>            <div className="flex space-x-3">
               <Link
-                to="https://youtube.com/@ytcreator"
+                to="https://www.youtube.com/@SkynticSA"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
@@ -30,16 +29,7 @@ export default function FooterSection() {
                 <Youtube className="w-5 h-5" />
               </Link>
               <Link
-                to="https://twitter.com/ytcreator"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter"
-                className="text-muted-foreground hover:text-blue-500 transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link
-                to="mailto:support@ytcreator.me"
+                to="mailto:hello@ytcreator.me"
                 aria-label="Email"
                 className="text-muted-foreground hover:text-green-500 transition-colors"
               >
