@@ -28,7 +28,9 @@ import {
   ArrowLeftIcon,
   CopyIcon,
   DownloadIcon,
-  UploadIcon
+  UploadIcon,
+  ChevronDownIcon,
+  ChevronUpIcon
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 
@@ -36,14 +38,14 @@ export default function RefinePage() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
   const transcriptId = searchParams.get("transcript");
-  
-  const [selectedTranscriptId, setSelectedTranscriptId] = useState(transcriptId || "");
+    const [selectedTranscriptId, setSelectedTranscriptId] = useState(transcriptId || "");
   const [selectedScriptId, setSelectedScriptId] = useState("");
   const [refinementInstructions, setRefinementInstructions] = useState("");
   const [isRefining, setIsRefining] = useState(false);
   const [refinedScript, setRefinedScript] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
 
   const refineScript = useAction(api.youtube.refineScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
@@ -357,14 +359,43 @@ export default function RefinePage() {
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Detailed Analysis Summary */}
+                  </div>                  {/* Detailed Analysis Summary */}
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">AI Analysis Summary</h4>
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <p className="text-sm leading-relaxed">{styleAnalysis.detailedAnalysis}</p>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">AI Analysis Summary</h4>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)}
+                        className="text-xs"
+                      >
+                        {isAnalysisExpanded ? (
+                          <>
+                            <ChevronUpIcon className="w-3 h-3 mr-1" />
+                            Collapse
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDownIcon className="w-3 h-3 mr-1" />
+                            View Full Analysis
+                          </>
+                        )}
+                      </Button>
                     </div>
+                    
+                    {isAnalysisExpanded && (
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <p className="text-sm leading-relaxed">{styleAnalysis.detailedAnalysis}</p>
+                      </div>
+                    )}
+                    
+                    {!isAnalysisExpanded && (
+                      <div className="p-4 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
+                        <p className="text-sm text-muted-foreground text-center">
+                          Click "View Full Analysis" to see the complete AI analysis summary
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
