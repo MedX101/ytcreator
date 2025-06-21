@@ -38,73 +38,94 @@ import { api } from "../../../../convex/_generated/api";
 const formatAnalysisText = (text: string) => {
   if (!text) return null;
   
-  // Split into sentences and paragraphs
-  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  // Split by double line breaks to get paragraphs, then clean up
+  const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0);
   const elements = [];
   
-  let currentSection = "";
-  let sectionContent = [];
-  
-  sentences.forEach((sentence, index) => {
-    const trimmed = sentence.trim();
+  paragraphs.forEach((paragraph, index) => {
+    const trimmed = paragraph.trim();
     if (!trimmed) return;
     
-    // Check if this looks like a section header (contains keywords)
-    const isHeader = /^(The|This|Overall|In terms of|Regarding|When it comes to|The creator|The content|Analysis shows)/i.test(trimmed);
+    // Check for markdown-style headers (***text***, **text**, or #text)
+    const boldHeaderMatch = trimmed.match(/^\*\*\*(.+?)\*\*\*/);
+    const mediumHeaderMatch = trimmed.match(/^\*\*(.+?)\*\*/);
+    const hashHeaderMatch = trimmed.match(/^#+\s*(.+)/);
     
-    if (isHeader && sectionContent.length > 0) {
-      // Push previous section
-      if (currentSection) {
+    if (boldHeaderMatch) {
+      // Handle ***Header*** - Main section header
+      elements.push(
+        <div key={`header-${index}`} className="mb-6 mt-4">
+          <h3 className="text-lg font-bold text-primary border-b-2 border-primary/20 pb-2">
+            {boldHeaderMatch[1].trim()}
+          </h3>
+        </div>
+      );
+    } else if (mediumHeaderMatch) {
+      // Handle **Subheader** - Subsection header
+      elements.push(
+        <div key={`subheader-${index}`} className="mb-4 mt-3">
+          <h4 className="text-base font-semibold text-foreground underline decoration-primary/40 underline-offset-4">
+            {mediumHeaderMatch[1].trim()}
+          </h4>
+        </div>
+      );
+    } else if (hashHeaderMatch) {
+      // Handle # Header - Alternative header style
+      elements.push(
+        <div key={`hash-header-${index}`} className="mb-4 mt-3">
+          <h4 className="text-base font-semibold text-primary">
+            {hashHeaderMatch[1].trim()}
+          </h4>
+        </div>
+      );
+    } else {
+      // Regular paragraph content
+      // Split into sentences for better formatting
+      const sentences = trimmed.split(/([.!?]+)/).filter(part => part.trim().length > 0);
+      let formattedText = "";
+      
+      for (let i = 0; i < sentences.length; i += 2) {
+        const sentence = sentences[i]?.trim();
+        const punctuation = sentences[i + 1] || "";
+        if (sentence) {
+          formattedText += sentence + punctuation + " ";
+        }
+      }
+      
+      // Clean up any remaining markdown and format the text
+      const cleanText = formattedText
+        .replace(/\*\*\*(.+?)\*\*\*/g, '$1') // Remove any remaining ***
+        .replace(/\*\*(.+?)\*\*/g, '$1')    // Remove any remaining **
+        .replace(/\*(.+?)\*/g, '$1')        // Remove any remaining *
+        .trim();
+      
+      if (cleanText) {
         elements.push(
-          <div key={`section-${elements.length}`} className="mb-4">
-            <h4 className="font-semibold text-foreground mb-2">{currentSection}</h4>
-            <div className="pl-3 border-l-2 border-primary/20 space-y-1">
-              {sectionContent.map((content, idx) => (
-                <p key={idx} className="text-muted-foreground text-sm">{content}.</p>
-              ))}
+          <div key={`content-${index}`} className="mb-4">
+            <div className="pl-4 border-l-2 border-muted-foreground/20">
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {cleanText}
+              </p>
             </div>
           </div>
         );
       }
-      
-      // Start new section
-      currentSection = trimmed;
-      sectionContent = [];
-    } else {
-      // Add to current section
-      if (isHeader) {
-        currentSection = trimmed;
-      } else {
-        sectionContent.push(trimmed);
-      }
-    }
-    
-    // If it's the last sentence, push the final section
-    if (index === sentences.length - 1 && sectionContent.length > 0) {
-      elements.push(
-        <div key={`section-${elements.length}`} className="mb-4">
-          {currentSection && <h4 className="font-semibold text-foreground mb-2">{currentSection}</h4>}
-          <div className="pl-3 border-l-2 border-primary/20 space-y-1">
-            {sectionContent.map((content, idx) => (
-              <p key={idx} className="text-muted-foreground text-sm">{content}.</p>
-            ))}
-          </div>
-        </div>
-      );
     }
   });
   
-  // If no structured sections found, fall back to paragraph formatting
+  // If no structured content found, fall back to simple paragraph formatting
   if (elements.length === 0) {
-    const paragraphs = text.split(/\n\n|\. {2,}/).filter(p => p.trim().length > 0);
-    return paragraphs.map((paragraph, index) => (
-      <div key={index} className="mb-3">
-        <p className="text-muted-foreground text-sm leading-relaxed">{paragraph.trim()}.</p>
+    const simpleText = text.replace(/\*\*\*(.+?)\*\*\*/g, '$1').replace(/\*\*(.+?)\*\*/g, '$1');
+    return (
+      <div className="space-y-3">
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          {simpleText}
+        </p>
       </div>
-    ));
+    );
   }
   
-  return elements;
+  return <div className="space-y-2">{elements}</div>;
 };
 
 export default function RefinePage() {
