@@ -532,10 +532,48 @@ export default function GeneratePage() {
                       }{" "}
                       linguistic features identified • Processed at{" "}
                       {new Date(
-                        styleAnalysis.processingDetails.analyzedAt
-                      ).toLocaleString()}
+                        styleAnalysis.processingDetails.analyzedAt                      ).toLocaleString()}
                     </div>
                   )}
+                  
+                  {/* AI Analysis Summary - Expandable Section */}
+                  <div className="mt-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-semibold text-muted-foreground">
+                        AI Analysis Summary
+                      </h4>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)}
+                        className="flex items-center gap-2"
+                      >
+                        {isAnalysisExpanded ? (
+                          <>
+                            <ChevronUpIcon className="w-4 h-4" />
+                            Collapse
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDownIcon className="w-4 h-4" />
+                            View Full Analysis
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                    {isAnalysisExpanded ? (
+                      <div className="p-4 bg-muted/30 rounded-lg border-l-4 border-purple-500 max-h-96 overflow-y-auto">
+                        <div className="prose prose-sm max-w-none dark:prose-invert">
+                          {formatAnalysisText(styleAnalysis.detailedAnalysis)}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground p-3 bg-muted/20 rounded border">
+                        Click "View Full Analysis" to see the complete AI analysis report with detailed insights and patterns
+                      </p>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -705,57 +743,6 @@ export default function GeneratePage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* AI Analysis Summary - Expandable Section */}
-      {transcript && styleAnalysis && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <SparklesIcon className="w-5 h-5 text-purple-500" />
-              AI Analysis Summary
-            </CardTitle>
-            <CardDescription>
-              Detailed breakdown of the AI's comprehensive style analysis
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                {isAnalysisExpanded 
-                  ? "Complete AI analysis with detailed insights and patterns" 
-                  : "Click to view the full AI analysis report with detailed insights"
-                }
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)}
-                className="flex items-center gap-2"
-              >
-                {isAnalysisExpanded ? (
-                  <>
-                    <ChevronUpIcon className="w-4 h-4" />
-                    Collapse
-                  </>
-                ) : (
-                  <>
-                    <ChevronDownIcon className="w-4 h-4" />
-                    View Full Analysis
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {isAnalysisExpanded && (
-              <div className="mt-4 p-4 bg-muted/30 rounded-lg border-l-4 border-purple-500 max-h-96 overflow-y-auto">
-                <div className="prose prose-sm max-w-none dark:prose-invert">
-                  {formatAnalysisText(styleAnalysis.detailedAnalysis)}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
