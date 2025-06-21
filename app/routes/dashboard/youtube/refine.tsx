@@ -33,6 +33,7 @@ import {
   ChevronUpIcon
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
+import { cleanScriptForReading } from "~/lib/script-utils";
 
 // Function to format analysis text with proper structure
 const formatAnalysisText = (text: string) => {
@@ -142,6 +143,7 @@ export default function RefinePage() {
   // New states for custom script input
   const [useCustomScript, setUseCustomScript] = useState(false);
   const [customScript, setCustomScript] = useState("");
+  const [useCleanScript, setUseCleanScript] = useState(false);
   const refineScript = useAction(api.youtube.refineScript);
   const refineCustomScript = useAction(api.youtube.refineCustomScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
@@ -238,17 +240,16 @@ export default function RefinePage() {
       reader.readAsText(file);
     }
   };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(refinedScript);
+  const copyToClipboard = (content = refinedScript) => {
+    navigator.clipboard.writeText(content);
   };
 
-  const downloadScript = () => {
-    const blob = new Blob([refinedScript], { type: 'text/plain' });
+  const downloadScript = (content = refinedScript, filename = 'refined-script.txt') => {
+    const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'refined-script.txt';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -757,9 +758,7 @@ export default function RefinePage() {
             </Button>
           </CardContent>
         </Card>
-      )}
-
-      {/* Refined Script Display */}
+      )}      {/* Refined Script Display */}
       {refinedScript && (
         <Card>
           <CardHeader>
@@ -769,29 +768,57 @@ export default function RefinePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Clean Script Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <input
+                type="checkbox"
+                id="clean-refined-script-toggle"
+                checked={useCleanScript}
+                onChange={(e) => setUseCleanScript(e.target.checked)}
+                className="w-4 h-4 text-primary"
+              />
+              <Label htmlFor="clean-refined-script-toggle" className="text-sm font-medium cursor-pointer">
+                Clean script for AI voice-over (removes timestamps, symbols)
+              </Label>
+            </div>
+            
             <Textarea
-              value={refinedScript}
+              value={useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />
             <div className="flex gap-2">
               <Button
-                onClick={copyToClipboard}
+                onClick={() => {
+                  const scriptContent = useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript;
+                  copyToClipboard(scriptContent);
+                }}
                 variant="outline"
                 size="sm"
+                title={useCleanScript ? "Copy Clean Script (AI voice-over ready)" : "Copy Original Script"}
               >
                 <CopyIcon className="w-4 h-4 mr-2" />
                 Copy to Clipboard
               </Button>
               <Button
-                onClick={downloadScript}
+                onClick={() => {
+                  const scriptContent = useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript;
+                  const filename = `refined-script${useCleanScript ? '_clean' : ''}.txt`;
+                  downloadScript(scriptContent, filename);
+                }}
                 variant="outline"
                 size="sm"
+                title={useCleanScript ? "Download Clean Script (AI voice-over ready)" : "Download Original Script"}
               >
                 <DownloadIcon className="w-4 h-4 mr-2" />
                 Download
               </Button>
             </div>
+            {useCleanScript && (
+              <div className="text-xs text-muted-foreground p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                <span className="font-medium">Clean script mode:</span> Timestamps, symbols, and formatting removed for AI voice-over or natural reading.
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

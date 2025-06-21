@@ -34,6 +34,7 @@ import {
   ChevronUpIcon,
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
+import { cleanScriptForReading } from "~/lib/script-utils";
 
 // Function to format analysis text with proper structure and styling
 const formatAnalysisText = (text: string) => {
@@ -134,9 +135,9 @@ export default function GeneratePage() {
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [generatedScript, setGeneratedScript] = useState("");  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [generatedScript, setGeneratedScript] = useState("");  const [error, setError] = useState("");  const [success, setSuccess] = useState(false);
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
+  const [useCleanScript, setUseCleanScript] = useState(false);
 
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
   const generateScript = useAction(api.youtube.generateScript);
@@ -202,17 +203,15 @@ export default function GeneratePage() {
       setIsGenerating(false);
     }
   };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedScript);
+  const copyToClipboard = (content = generatedScript) => {
+    navigator.clipboard.writeText(content);
   };
-
-  const downloadScript = () => {
-    const blob = new Blob([generatedScript], { type: "text/plain" });
+  const downloadScript = (content = generatedScript, filename = `${topic || "script"}.txt`) => {
+    const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${topic || "script"}.txt`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -683,9 +682,7 @@ export default function GeneratePage() {
             )}
           </Button>
         </CardContent>
-      </Card>
-
-      {/* Generated Script Display */}
+      </Card>      {/* Generated Script Display */}
       {generatedScript && (
         <Card>
           <CardHeader>
@@ -695,29 +692,57 @@ export default function GeneratePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Clean Script Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <input
+                type="checkbox"
+                id="clean-script-toggle"
+                checked={useCleanScript}
+                onChange={(e) => setUseCleanScript(e.target.checked)}
+                className="w-4 h-4 text-primary"
+              />
+              <Label htmlFor="clean-script-toggle" className="text-sm font-medium cursor-pointer">
+                Clean script for AI voice-over (removes timestamps, symbols)
+              </Label>
+            </div>
+            
             <Textarea
-              value={generatedScript}
+              value={useCleanScript ? cleanScriptForReading(generatedScript) : generatedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />
             <div className="flex gap-2">
               <Button
-                onClick={copyToClipboard}
+                onClick={() => {
+                  const scriptContent = useCleanScript ? cleanScriptForReading(generatedScript) : generatedScript;
+                  copyToClipboard(scriptContent);
+                }}
                 variant="outline"
                 size="sm"
+                title={useCleanScript ? "Copy Clean Script (AI voice-over ready)" : "Copy Original Script"}
               >
                 <CopyIcon className="w-4 h-4 mr-2" />
                 Copy to Clipboard
               </Button>
               <Button
-                onClick={downloadScript}
+                onClick={() => {
+                  const scriptContent = useCleanScript ? cleanScriptForReading(generatedScript) : generatedScript;
+                  const filename = `${topic || 'generated-script'}${useCleanScript ? '_clean' : ''}.txt`;
+                  downloadScript(scriptContent, filename);
+                }}
                 variant="outline"
                 size="sm"
+                title={useCleanScript ? "Download Clean Script (AI voice-over ready)" : "Download Original Script"}
               >
                 <DownloadIcon className="w-4 h-4 mr-2" />
                 Download
               </Button>
             </div>
+            {useCleanScript && (
+              <div className="text-xs text-muted-foreground p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                <span className="font-medium">Clean script mode:</span> Timestamps, symbols, and formatting removed for AI voice-over or natural reading.
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

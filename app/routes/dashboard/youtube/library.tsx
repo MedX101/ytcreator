@@ -32,44 +32,14 @@ import {
   PlusIcon
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
+import { cleanScriptForReading } from "~/lib/script-utils";
 
 export default function LibraryPage() {
   const { userId } = useAuth();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [useCleanScript, setUseCleanScript] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");  const [useCleanScript, setUseCleanScript] = useState(false);
   
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
   const userScripts = useQuery(api.youtube.getUserScripts);
-
-  // Function to clean script for AI voice-over or natural reading
-  const cleanScript = (script: string) => {
-    if (!script) return "";
-    
-    return script
-      // Remove timestamps [00:00 - 00:30] or (0:00)
-      .replace(/\[\d+:\d+(?::\d+)?\s*-?\s*\d+:\d+(?::\d+)?\]/g, '')
-      .replace(/\(\d+:\d+(?::\d+)?\)/g, '')
-      // Remove dashes at the beginning of lines (- Action item)
-      .replace(/^\s*-\s+/gm, '')
-      // Remove parenthetical notes (like stage directions)
-      .replace(/\([^)]*\)/g, '')
-      // Remove square brackets [like this]
-      .replace(/\[[^\]]*\]/g, '')
-      // Remove double dashes --
-      .replace(/--/g, '')
-      // Remove multiple spaces and normalize whitespace
-      .replace(/\s+/g, ' ')
-      // Remove extra line breaks but keep paragraph structure
-      .replace(/\n\s*\n\s*\n/g, '\n\n')
-      // Clean up beginning and end
-      .trim()
-      // Ensure sentences end properly
-      .replace(/([.!?])\s*([A-Z])/g, '$1\n\n$2')
-      // Remove any remaining weird symbols commonly used in transcripts
-      .replace(/[►▼▲]/g, '')
-      .replace(/»|«/g, '')
-      .replace(/…/g, '...');
-  };
 
   if (!userId) {
     return (
@@ -335,10 +305,9 @@ export default function LibraryPage() {
                             </Label>
                           </div>
                         </div>
-                      </div>                      <div className="flex gap-2">
-                        <Button
+                      </div>                      <div className="flex gap-2">                        <Button
                           onClick={() => {
-                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            const scriptContent = useCleanScript ? cleanScriptForReading(script.outputScript) : script.outputScript;
                             copyToClipboard(scriptContent);
                           }}
                           variant="outline"
@@ -347,10 +316,9 @@ export default function LibraryPage() {
                           title={useCleanScript ? "Copy Clean Script (AI voice-over ready)" : "Copy Original Script"}
                         >
                           <CopyIcon className="w-4 h-4" />
-                        </Button>
-                        <Button
+                        </Button>                        <Button
                           onClick={() => {
-                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            const scriptContent = useCleanScript ? cleanScriptForReading(script.outputScript) : script.outputScript;
                             const filename = `${script.inputTitle || 'script'}${useCleanScript ? '_clean' : ''}.txt`;
                             downloadText(scriptContent, filename);
                           }}
@@ -370,10 +338,9 @@ export default function LibraryPage() {
                           <div className="text-xs text-blue-600 mb-2 font-medium">
                             📝 Clean Script Preview (AI voice-over ready)
                           </div>
-                        )}
-                        <p className="text-sm whitespace-pre-wrap">
+                        )}                        <p className="text-sm whitespace-pre-wrap">
                           {(() => {
-                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            const scriptContent = useCleanScript ? cleanScriptForReading(script.outputScript) : script.outputScript;
                             return scriptContent.substring(0, 300) + (scriptContent.length > 300 ? "..." : "");
                           })()}
                         </p>
