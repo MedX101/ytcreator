@@ -19,6 +19,7 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs";
 import { Badge } from "~/components/ui/badge";
+import { Label } from "~/components/ui/label";
 import { 
   VideoIcon, 
   FileTextIcon, 
@@ -35,9 +36,40 @@ import { api } from "../../../../convex/_generated/api";
 export default function LibraryPage() {
   const { userId } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const [useCleanScript, setUseCleanScript] = useState(false);
   
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
   const userScripts = useQuery(api.youtube.getUserScripts);
+
+  // Function to clean script for AI voice-over or natural reading
+  const cleanScript = (script: string) => {
+    if (!script) return "";
+    
+    return script
+      // Remove timestamps [00:00 - 00:30] or (0:00)
+      .replace(/\[\d+:\d+(?::\d+)?\s*-?\s*\d+:\d+(?::\d+)?\]/g, '')
+      .replace(/\(\d+:\d+(?::\d+)?\)/g, '')
+      // Remove dashes at the beginning of lines (- Action item)
+      .replace(/^\s*-\s+/gm, '')
+      // Remove parenthetical notes (like stage directions)
+      .replace(/\([^)]*\)/g, '')
+      // Remove square brackets [like this]
+      .replace(/\[[^\]]*\]/g, '')
+      // Remove double dashes --
+      .replace(/--/g, '')
+      // Remove multiple spaces and normalize whitespace
+      .replace(/\s+/g, ' ')
+      // Remove extra line breaks but keep paragraph structure
+      .replace(/\n\s*\n\s*\n/g, '\n\n')
+      // Clean up beginning and end
+      .trim()
+      // Ensure sentences end properly
+      .replace(/([.!?])\s*([A-Z])/g, '$1\n\n$2')
+      // Remove any remaining weird symbols commonly used in transcripts
+      .replace(/[►▼▲]/g, '')
+      .replace(/»|«/g, '')
+      .replace(/…/g, '...');
+  };
 
   if (!userId) {
     return (
@@ -282,45 +314,68 @@ export default function LibraryPage() {
                         <CardDescription className="flex items-center gap-2">
                           <CalendarIcon className="w-4 h-4" />
                           {formatDate(script._creationTime)}
-                        </CardDescription>
-                        <div className="flex items-center gap-2">
+                        </CardDescription>                        <div className="flex items-center gap-2 flex-wrap">
                           <Badge className={getStatusColor(script.status)}>
                             {script.status}
                           </Badge>
                           <Badge variant="outline">
                             {script.type}
                           </Badge>
+                          {/* Clean Script Toggle */}
+                          <div className="flex items-center space-x-2 ml-2">
+                            <input
+                              type="checkbox"
+                              id={`clean-script-${script._id}`}
+                              checked={useCleanScript}
+                              onChange={(e) => setUseCleanScript(e.target.checked)}
+                              className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
+                            />
+                            <Label htmlFor={`clean-script-${script._id}`} className="text-xs font-medium text-muted-foreground">
+                              Clean Script
+                            </Label>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex gap-2">
+                      </div>                      <div className="flex gap-2">
                         <Button
-                          onClick={() => copyToClipboard(script.outputScript)}
+                          onClick={() => {
+                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            copyToClipboard(scriptContent);
+                          }}
                           variant="outline"
                           size="sm"
                           disabled={!script.outputScript}
+                          title={useCleanScript ? "Copy Clean Script (AI voice-over ready)" : "Copy Original Script"}
                         >
                           <CopyIcon className="w-4 h-4" />
                         </Button>
                         <Button
-                          onClick={() => downloadText(
-                            script.outputScript, 
-                            `${script.inputTitle || 'script'}.txt`
-                          )}
+                          onClick={() => {
+                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            const filename = `${script.inputTitle || 'script'}${useCleanScript ? '_clean' : ''}.txt`;
+                            downloadText(scriptContent, filename);
+                          }}
                           variant="outline"
                           size="sm"
                           disabled={!script.outputScript}
+                          title={useCleanScript ? "Download Clean Script (AI voice-over ready)" : "Download Original Script"}
                         >
                           <DownloadIcon className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
-                  </CardHeader>
-                  {script.outputScript && (
+                  </CardHeader>                  {script.outputScript && (
                     <CardContent>
                       <div className="bg-muted/50 rounded-lg p-4 max-h-40 overflow-y-auto">
+                        {useCleanScript && (
+                          <div className="text-xs text-blue-600 mb-2 font-medium">
+                            📝 Clean Script Preview (AI voice-over ready)
+                          </div>
+                        )}
                         <p className="text-sm whitespace-pre-wrap">
-                          {script.outputScript.substring(0, 300)}
-                          {script.outputScript.length > 300 && "..."}
+                          {(() => {
+                            const scriptContent = useCleanScript ? cleanScript(script.outputScript) : script.outputScript;
+                            return scriptContent.substring(0, 300) + (scriptContent.length > 300 ? "..." : "");
+                          })()}
                         </p>
                       </div>
                     </CardContent>
