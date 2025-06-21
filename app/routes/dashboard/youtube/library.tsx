@@ -174,11 +174,15 @@ export default function LibraryPage() {
               {filteredTranscripts.map((transcript) => (
                 <Card key={transcript._id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
+                    <div className="flex items-start justify-between">                      <div className="space-y-2 flex-1">
                         <CardTitle className="text-lg">
-                          {transcript.title || "Untitled Video"}
+                          {transcript.metadata?.videoTitle || transcript.title || "Untitled Video"}
                         </CardTitle>
+                        {transcript.metadata?.channelName && (
+                          <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                            by {transcript.metadata.channelName}
+                          </p>
+                        )}
                         <CardDescription className="flex items-center gap-2">
                           <CalendarIcon className="w-4 h-4" />
                           {formatDate(transcript._creationTime)}
