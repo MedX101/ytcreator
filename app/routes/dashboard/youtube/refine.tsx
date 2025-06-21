@@ -124,64 +124,8 @@ const formatAnalysisText = (text: string) => {
       </div>
     );
   }
-    return <div className="space-y-2">{elements}</div>;
-};
-
-// Function to clean script for voice-over (remove timestamps, dashes, parentheses, etc.)
-const cleanScriptForVoiceOver = (script: string): string => {
-  if (!script) return "";
   
-  return script
-    // Remove ALL timestamps in any format
-    .replace(/\[[0-9:.,\s]*\]/g, '')
-    .replace(/\([0-9:.,\s]*\)/g, '')
-    .replace(/\{[0-9:.,\s]*\}/g, '')
-    .replace(/[0-9]+:[0-9]+[:-][0-9]+/g, '')
-    .replace(/[0-9]+:[0-9]+/g, '')
-    
-    // Remove ALL dashes, bullets, and list markers
-    .replace(/^[\s]*[-•\-–—]\s*/gm, '')
-    .replace(/[\s]*[-•\-–—][\s]*/g, ' ')
-    
-    // Remove ALL markdown and formatting
-    .replace(/\*\*\*(.*?)\*\*\*/g, '$1') // ***bold italic*** -> text
-    .replace(/\*\*(.*?)\*\*/g, '$1') // **bold** -> text
-    .replace(/\*(.*?)\*/g, '$1') // *italic* -> text
-    .replace(/__(.*?)__/g, '$1') // __underline__ -> text
-    .replace(/_(.*?)_/g, '$1') // _italic_ -> text
-    .replace(/`(.*?)`/g, '$1') // `code` -> text
-    .replace(/~~(.*?)~~/g, '$1') // ~~strikethrough~~ -> text
-    
-    // Remove ALL brackets and parentheses content that looks like stage directions
-    .replace(/\[(.*?)\]/g, '') // [stage direction]
-    .replace(/\((.*?)\)/g, '') // (stage direction)
-    .replace(/\{(.*?)\}/g, '') // {stage direction}
-    
-    // Remove special characters and symbols
-    .replace(/[#\*\-_~`>|]/g, '')
-    .replace(/[→←↑↓]/g, '')
-    .replace(/[""'']/g, '"') // Replace smart quotes with regular quotes
-    
-    // Remove section headers and dividers
-    .replace(/^[\s]*={3,}.*$/gm, '') // === headers ===
-    .replace(/^[\s]*-{3,}.*$/gm, '') // --- dividers ---
-    .replace(/^[\s]*\*{3,}.*$/gm, '') // *** dividers ***
-    
-    // Clean up spacing and line breaks
-    .replace(/\n{3,}/g, '\n\n') // Max 2 line breaks
-    .replace(/[\s]{2,}/g, ' ') // Multiple spaces -> single space
-    .replace(/^\s+/gm, '') // Remove leading spaces
-    .replace(/\s+$/gm, '') // Remove trailing spaces
-    
-    // Clean up sentences
-    .replace(/\.\s*\./g, '.') // Remove double periods
-    .replace(/\?\s*\?/g, '?') // Remove double question marks
-    .replace(/!\s*!/g, '!') // Remove double exclamation marks
-      .split("\n")
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
-    .join("\n\n")
-    .trim();
+  return <div className="space-y-2">{elements}</div>;
 };
 
 export default function RefinePage() {
@@ -194,10 +138,10 @@ export default function RefinePage() {
   const [isRefining, setIsRefining] = useState(false);
   const [refinedScript, setRefinedScript] = useState("");
   const [error, setError] = useState("");  const [success, setSuccess] = useState(false);
-  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);  // New states for custom script input
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
+  // New states for custom script input
   const [useCustomScript, setUseCustomScript] = useState(false);
   const [customScript, setCustomScript] = useState("");
-  const [useCleanScript, setUseCleanScript] = useState(false);
   const refineScript = useAction(api.youtube.refineScript);
   const refineCustomScript = useAction(api.youtube.refineCustomScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
@@ -294,18 +238,17 @@ export default function RefinePage() {
       reader.readAsText(file);
     }
   };
+
   const copyToClipboard = () => {
-    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript;
-    navigator.clipboard.writeText(scriptToUse);
+    navigator.clipboard.writeText(refinedScript);
   };
 
   const downloadScript = () => {
-    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript;
-    const blob = new Blob([scriptToUse], { type: 'text/plain' });
+    const blob = new Blob([refinedScript], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `refined-script${useCleanScript ? "_clean" : ""}.txt`;
+    a.download = 'refined-script.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -824,26 +767,10 @@ export default function RefinePage() {
             <CardDescription>
               Your script transformed to match the reference style
             </CardDescription>
-          </CardHeader>          <CardContent className="space-y-4">
-            {/* Clean Script Toggle */}
-            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
-              <input
-                type="checkbox"
-                id="clean-script-toggle-refine"
-                checked={useCleanScript}
-                onChange={(e) => setUseCleanScript(e.target.checked)}
-                className="w-4 h-4 text-primary"
-              />
-              <label htmlFor="clean-script-toggle-refine" className="text-sm font-medium">
-                Clean Script (Voice-Over Ready)
-              </label>
-              <span className="text-xs text-muted-foreground">
-                Remove timestamps and formatting for AI voice-over
-              </span>
-            </div>
-            
+          </CardHeader>
+          <CardContent className="space-y-4">
             <Textarea
-              value={useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript}
+              value={refinedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />

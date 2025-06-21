@@ -40,64 +40,35 @@ export default function LibraryPage() {
   
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
   const userScripts = useQuery(api.youtube.getUserScripts);
+
   // Function to clean script for AI voice-over or natural reading
   const cleanScript = (script: string) => {
     if (!script) return "";
     
     return script
-      // Remove ALL timestamps in any format
-      .replace(/\[[0-9:.,\s]*\]/g, '')
-      .replace(/\([0-9:.,\s]*\)/g, '')
-      .replace(/\{[0-9:.,\s]*\}/g, '')
-      .replace(/[0-9]+:[0-9]+[:-][0-9]+/g, '')
-      .replace(/[0-9]+:[0-9]+/g, '')
-      
-      // Remove ALL dashes, bullets, and list markers
-      .replace(/^[\s]*[-•\-–—]\s*/gm, '')
-      .replace(/[\s]*[-•\-–—][\s]*/g, ' ')
-      
-      // Remove ALL markdown and formatting
-      .replace(/\*\*\*(.*?)\*\*\*/g, '$1') // ***bold italic*** -> text
-      .replace(/\*\*(.*?)\*\*/g, '$1') // **bold** -> text
-      .replace(/\*(.*?)\*/g, '$1') // *italic* -> text
-      .replace(/__(.*?)__/g, '$1') // __underline__ -> text
-      .replace(/_(.*?)_/g, '$1') // _italic_ -> text
-      .replace(/`(.*?)`/g, '$1') // `code` -> text
-      .replace(/~~(.*?)~~/g, '$1') // ~~strikethrough~~ -> text
-      
-      // Remove ALL brackets and parentheses content that looks like stage directions
-      .replace(/\[(.*?)\]/g, '') // [stage direction]
-      .replace(/\((.*?)\)/g, '') // (stage direction)
-      .replace(/\{(.*?)\}/g, '') // {stage direction}
-      
-      // Remove special characters and symbols
-      .replace(/[#\*\-_~`>|]/g, '')
-      .replace(/[→←↑↓]/g, '')
-      .replace(/[""'']/g, '"') // Replace smart quotes with regular quotes
+      // Remove timestamps [00:00 - 00:30] or (0:00)
+      .replace(/\[\d+:\d+(?::\d+)?\s*-?\s*\d+:\d+(?::\d+)?\]/g, '')
+      .replace(/\(\d+:\d+(?::\d+)?\)/g, '')
+      // Remove dashes at the beginning of lines (- Action item)
+      .replace(/^\s*-\s+/gm, '')
+      // Remove parenthetical notes (like stage directions)
+      .replace(/\([^)]*\)/g, '')
+      // Remove square brackets [like this]
+      .replace(/\[[^\]]*\]/g, '')
+      // Remove double dashes --
+      .replace(/--/g, '')
+      // Remove multiple spaces and normalize whitespace
+      .replace(/\s+/g, ' ')
+      // Remove extra line breaks but keep paragraph structure
+      .replace(/\n\s*\n\s*\n/g, '\n\n')
+      // Clean up beginning and end
+      .trim()
+      // Ensure sentences end properly
+      .replace(/([.!?])\s*([A-Z])/g, '$1\n\n$2')
+      // Remove any remaining weird symbols commonly used in transcripts
       .replace(/[►▼▲]/g, '')
       .replace(/»|«/g, '')
-      .replace(/…/g, '...')
-      
-      // Remove section headers and dividers
-      .replace(/^[\s]*={3,}.*$/gm, '') // === headers ===
-      .replace(/^[\s]*-{3,}.*$/gm, '') // --- dividers ---
-      .replace(/^[\s]*\*{3,}.*$/gm, '') // *** dividers ***
-      
-      // Clean up spacing and line breaks
-      .replace(/\n{3,}/g, '\n\n') // Max 2 line breaks
-      .replace(/[\s]{2,}/g, ' ') // Multiple spaces -> single space
-      .replace(/^\s+/gm, '') // Remove leading spaces
-      .replace(/\s+$/gm, '') // Remove trailing spaces
-      
-      // Clean up sentences
-      .replace(/\.\s*\./g, '.') // Remove double periods
-      .replace(/\?\s*\?/g, '?') // Remove double question marks
-      .replace(/!\s*!/g, '!') // Remove double exclamation marks
-        .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
-      .join('\n\n')
-      .trim();
+      .replace(/…/g, '...');
   };
 
   if (!userId) {
