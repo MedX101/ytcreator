@@ -168,20 +168,19 @@ export default function LibraryPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {filteredTranscripts.map((transcript) => (
+            <div className="grid gap-4">              {filteredTranscripts.map((transcript) => (
                 <Card key={transcript._id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
-                        <CardTitle className="text-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <CardTitle className="text-lg break-words">
                           {transcript.title || "Untitled Video"}
                         </CardTitle>
                         <CardDescription className="flex items-center gap-2">
-                          <CalendarIcon className="w-4 h-4" />
-                          {formatDate(transcript._creationTime)}
+                          <CalendarIcon className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{formatDate(transcript._creationTime)}</span>
                         </CardDescription>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col xs:flex-row xs:items-center gap-2">
                           <Badge className={getStatusColor(transcript.status)}>
                             {transcript.status}
                           </Badge>
@@ -189,14 +188,14 @@ export default function LibraryPage() {
                             href={transcript.youtubeUrl} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1 truncate"
                           >
-                            View Video
-                            <ExternalLinkIcon className="w-3 h-3" />
+                            <span className="truncate">View Video</span>
+                            <ExternalLinkIcon className="w-3 h-3 flex-shrink-0" />
                           </a>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-shrink-0">
                         <Button
                           onClick={() => copyToClipboard(transcript.originalScript)}
                           variant="outline"
@@ -222,25 +221,27 @@ export default function LibraryPage() {
                   {transcript.originalScript && (
                     <CardContent>
                       <div className="bg-muted/50 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        <p className="text-sm whitespace-pre-wrap">
+                        <p className="text-sm whitespace-pre-wrap break-words">
                           {transcript.originalScript.substring(0, 300)}
                           {transcript.originalScript.length > 300 && "..."}
                         </p>
                       </div>
                       {transcript.status === 'completed' && (
-                        <div className="flex gap-2 mt-4">
-                          <Link to={`/dashboard/youtube/generate?transcript=${transcript._id}`}>
-                            <Button size="sm">
+                        <div className="flex flex-col xs:flex-row gap-2 mt-4">
+                          <Link to={`/dashboard/youtube/generate?transcript=${transcript._id}`} className="flex-1">
+                            <Button size="sm" className="w-full">
                               Generate New Script
                             </Button>
                           </Link>
-                          <Link to={`/dashboard/youtube/refine?transcript=${transcript._id}`}>
-                            <Button size="sm" variant="outline">
+                          <Link to={`/dashboard/youtube/refine?transcript=${transcript._id}`} className="flex-1">
+                            <Button size="sm" variant="outline" className="w-full">
                               Refine Existing Script
                             </Button>
                           </Link>
                         </div>
                       )}
+                    </CardContent>
+                  )}
                     </CardContent>
                   )}
                 </Card>
@@ -270,20 +271,19 @@ export default function LibraryPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {filteredScripts.map((script) => (
+            <div className="grid gap-4">              {filteredScripts.map((script) => (
                 <Card key={script._id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
-                        <CardTitle className="text-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <CardTitle className="text-lg break-words">
                           {script.inputTitle || (script.type === 'refined' ? 'Refined Script' : 'Generated Script')}
                         </CardTitle>
                         <CardDescription className="flex items-center gap-2">
-                          <CalendarIcon className="w-4 h-4" />
-                          {formatDate(script._creationTime)}
+                          <CalendarIcon className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{formatDate(script._creationTime)}</span>
                         </CardDescription>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col xs:flex-row xs:items-center gap-2">
                           <Badge className={getStatusColor(script.status)}>
                             {script.status}
                           </Badge>
@@ -292,7 +292,7 @@ export default function LibraryPage() {
                           </Badge>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-shrink-0">
                         <Button
                           onClick={() => copyToClipboard(script.outputScript)}
                           variant="outline"
@@ -318,7 +318,7 @@ export default function LibraryPage() {
                   {script.outputScript && (
                     <CardContent>
                       <div className="bg-muted/50 rounded-lg p-4 max-h-40 overflow-y-auto">
-                        <p className="text-sm whitespace-pre-wrap">
+                        <p className="text-sm whitespace-pre-wrap break-words">
                           {script.outputScript.substring(0, 300)}
                           {script.outputScript.length > 300 && "..."}
                         </p>
