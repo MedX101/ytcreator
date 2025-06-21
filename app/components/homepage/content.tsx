@@ -82,10 +82,17 @@ export default function ContentSection() {
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 mt-1">•</span>
                     <span>Hours wasted rewriting and editing bland content</span>
+                  </li>                  <li className="flex items-start gap-3">
+                    <span className="text-red-500 mt-1">•</span>
+                    <span>Low view counts and poor audience retention</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 mt-1">•</span>
-                    <span>Low view counts and poor audience retention</span>
+                    <span>Messy scripts cluttered with timestamps, visual cues, and production junk - you waste hours manually cleaning [0:00-0:15] and [VISUAL: Show graphics]</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-500 mt-1">•</span>
+                    <span>AI voiceover nightmares with broken formatting - asterisks and dashes make your voice sound robotic and confused</span>
                   </li>
                 </ul>
               </div>
@@ -113,10 +120,17 @@ export default function ContentSection() {
                   <li className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">•</span>
                     <span>10x faster content creation - ready to publish scripts</span>
+                  </li>                  <li className="flex items-start gap-3">
+                    <span className="text-green-500 mt-1">•</span>
+                    <span>Higher engagement and viral potential for every video</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-500 mt-1">•</span>
-                    <span>Higher engagement and viral potential for every video</span>
+                    <span>One-click clean scripts ready for instant copy-paste - automatically removes all timestamps, visual cues, and production notes in seconds</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-500 mt-1">•</span>
+                    <span>AI voiceover optimized formatting - perfect emphasis, natural pauses, and smooth speech flow that sounds completely human</span>
                   </li>
                 </ul>
               </div>
