@@ -22,43 +22,135 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Alert, AlertDescription } from "~/components/ui/alert";
-import { 
-  PenToolIcon, 
-  Loader2Icon, 
-  CheckIcon, 
+import {
+  PenToolIcon,
+  Loader2Icon,
+  CheckIcon,
   ArrowLeftIcon,
   SparklesIcon,
   CopyIcon,
-  DownloadIcon
+  DownloadIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
+
+// Function to format analysis text with proper structure and styling
+const formatAnalysisText = (text: string) => {
+  if (!text) return null;
+
+  const lines = text.split("\n").filter((line) => line.trim());
+  const elements = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // Check for main headers (***Header***)
+    if (line.match(/^\*{3}(.+?)\*{3}$/)) {
+      const headerText = line.replace(/^\*{3}(.+?)\*{3}$/, "$1").trim();
+      elements.push(
+        <div key={`header-${i}`} className="mb-4 mt-6 first:mt-0">
+          <h3 className="text-lg font-bold text-blue-600 pb-2 border-b-2 border-blue-200">
+            {headerText}
+          </h3>
+        </div>
+      );
+    }
+    // Check for subheaders (**Subheader**)
+    else if (line.match(/^\*{2}(.+?)\*{2}$/)) {
+      const subHeaderText = line.replace(/^\*{2}(.+?)\*{2}$/, "$1").trim();
+      elements.push(
+        <div key={`subheader-${i}`} className="mb-3 mt-4">
+          <h4 className="text-base font-semibold text-gray-700 pb-1 border-b border-gray-200">
+            {subHeaderText}
+          </h4>
+        </div>
+      );
+    }
+    // Check for hash headers (# Header)
+    else if (line.startsWith("#")) {
+      const hashHeaderText = line.replace(/^#+\s*/, "").trim();
+      elements.push(
+        <div key={`hashheader-${i}`} className="mb-3 mt-4">
+          <h4 className="text-base font-semibold text-purple-600 pb-1">
+            {hashHeaderText}
+          </h4>
+        </div>
+      );
+    }
+    // Regular content
+    else {
+      // Clean up any remaining markdown
+      const cleanText = line
+        .replace(/\*{1,3}/g, "") // Remove asterisks
+        .replace(/#{1,6}\s*/g, "") // Remove hash symbols
+        .trim();
+
+      if (cleanText) {
+        elements.push(
+          <div
+            key={`content-${i}`}
+            className="mb-2 pl-3 border-l-2 border-gray-100"
+          >
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {cleanText}
+            </p>
+          </div>
+        );
+      }
+    }
+  }
+
+  // Fallback: if no structured elements found, format as simple paragraphs
+  if (elements.length === 0) {
+    const paragraphs = text
+      .split(/\n\n|\. {2,}/)
+      .filter((p) => p.trim().length > 0);
+    return paragraphs.map((paragraph, index) => (
+      <div
+        key={`fallback-${index}`}
+        className="mb-3 pl-3 border-l-2 border-gray-100"
+      >
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          {paragraph
+            .trim()
+            .replace(/\*{1,3}/g, "")
+            .replace(/#{1,6}\s*/g, "")}
+        </p>
+      </div>
+    ));
+  }
+
+  return elements;
+};
 
 export default function GeneratePage() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
   const transcriptId = searchParams.get("transcript");
-    const [topic, setTopic] = useState("");
+  const [topic, setTopic] = useState("");
   const [length, setLength] = useState("medium");
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [generatedScript, setGeneratedScript] = useState("");
-  const [error, setError] = useState("");
+  const [generatedScript, setGeneratedScript] = useState("");  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
 
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
   const generateScript = useAction(api.youtube.generateScript);
-  
+
   const transcript = useQuery(
     api.youtube.getTranscript,
     transcriptId ? { id: transcriptId as any } : "skip"
   );
-  
+
   const styleAnalyses = useQuery(api.youtube.getUserStyleAnalyses);
-  
+
   // Find style analysis for this transcript
   const styleAnalysis = styleAnalyses?.find(
-    analysis => analysis.transcriptId === transcriptId
+    (analysis) => analysis.transcriptId === transcriptId
   );
   useEffect(() => {
     if (transcript && !styleAnalysis && userId && !isAnalyzing) {
@@ -116,11 +208,11 @@ export default function GeneratePage() {
   };
 
   const downloadScript = () => {
-    const blob = new Blob([generatedScript], { type: 'text/plain' });
+    const blob = new Blob([generatedScript], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${topic || 'script'}.txt`;
+    a.download = `${topic || "script"}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -165,16 +257,19 @@ export default function GeneratePage() {
         </div>
         <h1 className="text-3xl font-bold">Generate New Script</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Create a new script that perfectly matches the analyzed writing style. 
-          Just provide a title or topic and AI will generate content in the exact same voice.
+          Create a new script that perfectly matches the analyzed writing style.
+          Just provide a title or topic and AI will generate content in the exact
+          same voice.
         </p>
-      </div>      {/* Reference Info */}
+      </div>{" "}
+      {/* Reference Info */}
       {transcript && (
         <Card>
           <CardHeader>
             <CardTitle>Reference Style Analysis</CardTitle>
             <CardDescription>
-              Advanced AI analysis from: {transcript.metadata?.videoTitle || transcript.title}
+              Advanced AI analysis from:{" "}
+              {transcript.metadata?.videoTitle || transcript.title}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -205,16 +300,22 @@ export default function GeneratePage() {
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-4">
                       <Loader2Icon className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">Analyzing Your Style...</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Analyzing Your Style...
+                    </h3>
                     <p className="text-muted-foreground max-w-md mx-auto">
-                      Our AI is performing deep analysis of your content style, tone, and patterns. This may take a moment.
+                      Our AI is performing deep analysis of your content style,
+                      tone, and patterns. This may take a moment.
                     </p>
                   </div>
 
                   {/* Loading Skeleton */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="p-4 bg-muted/50 rounded-lg text-center animate-pulse">
+                      <div
+                        key={i}
+                        className="p-4 bg-muted/50 rounded-lg text-center animate-pulse"
+                      >
                         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       </div>
@@ -241,24 +342,33 @@ export default function GeneratePage() {
                       <div className="text-2xl font-bold text-green-600">
                         {styleAnalysis.styleProfile.complexityScore || 7}/10
                       </div>
-                      <div className="text-sm text-muted-foreground">Complexity Score</div>
+                      <div className="text-sm text-muted-foreground">
+                        Complexity Score
+                      </div>
                     </div>
                     <div className="p-4 bg-muted/50 rounded-lg text-center">
                       <div className="text-2xl font-bold text-blue-600">
                         {styleAnalysis.styleProfile.wordCount || 1500}
                       </div>
-                      <div className="text-sm text-muted-foreground">Words Analyzed</div>
-                    </div>                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <div className="text-sm text-muted-foreground">
+                        Words Analyzed
+                      </div>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
                       <div className="text-2xl font-bold text-purple-600">
                         {styleAnalysis.processingDetails?.confidenceScore || 92}%
                       </div>
-                      <div className="text-sm text-muted-foreground">AI Confidence</div>
+                      <div className="text-sm text-muted-foreground">
+                        AI Confidence
+                      </div>
                     </div>
                     <div className="p-4 bg-muted/50 rounded-lg text-center">
                       <div className="text-2xl font-bold text-orange-600">
                         {styleAnalysis.processingDetails?.patternsDetected || 25}
                       </div>
-                      <div className="text-sm text-muted-foreground">Patterns Detected</div>
+                      <div className="text-sm text-muted-foreground">
+                        Patterns Detected
+                      </div>
                     </div>
                   </div>
 
@@ -269,73 +379,102 @@ export default function GeneratePage() {
                       Advanced Linguistic Analysis
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      
                       {/* Writing Style */}
                       <div className="space-y-3">
-                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Writing Style</h5>
+                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Writing Style
+                        </h5>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span>Tone:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.toneDescription}</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.toneDescription}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Vocabulary:</span>
-                            <span className="font-medium capitalize">{styleAnalysis.styleProfile.vocabularyLevel}</span>
+                            <span className="font-medium capitalize">
+                              {styleAnalysis.styleProfile.vocabularyLevel}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Structure:</span>
-                            <span className="font-medium capitalize">{styleAnalysis.styleProfile.sentenceStructure}</span>
+                            <span className="font-medium capitalize">
+                              {styleAnalysis.styleProfile.sentenceStructure}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Pacing:</span>
-                            <span className="font-medium capitalize">{styleAnalysis.styleProfile.pacingPattern}</span>
+                            <span className="font-medium capitalize">
+                              {styleAnalysis.styleProfile.pacingPattern}
+                            </span>
                           </div>
                         </div>
                       </div>
 
                       {/* Technical Analysis */}
                       <div className="space-y-3">
-                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Technical Metrics</h5>
+                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Technical Metrics
+                        </h5>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span>Avg Sentence:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.avgSentenceLength || 12} words</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.avgSentenceLength || 12} words
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Reading Time:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.readingTimeMinutes || 8} min</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.readingTimeMinutes || 8} min
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Questions/Para:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.questionFrequency || 1.2}</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.questionFrequency || 1.2}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Personal Pronouns:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.personalPronouns || 8.5}%</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.personalPronouns || 8.5}%
+                            </span>
                           </div>
                         </div>
                       </div>
 
                       {/* Psychological Profile */}
                       <div className="space-y-3">
-                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Psychological Profile</h5>
+                        <h5 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Psychological Profile
+                        </h5>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span>Authority Level:</span>
-                            <span className="font-medium capitalize">{styleAnalysis.styleProfile.authorityLevel || "High"}</span>
+                            <span className="font-medium capitalize">
+                              {styleAnalysis.styleProfile.authorityLevel || "High"}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Energy Level:</span>
-                            <span className="font-medium capitalize">{styleAnalysis.styleProfile.energyLevel || "Moderate"}</span>
+                            <span className="font-medium capitalize">
+                              {styleAnalysis.styleProfile.energyLevel || "Moderate"}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Authenticity:</span>
-                            <span className="font-medium">{styleAnalysis.styleProfile.authenticityMarkers || 5} markers</span>
+                            <span className="font-medium">
+                              {styleAnalysis.styleProfile.authenticityMarkers || 5} markers
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Sentiment:</span>
                             <span className="font-medium">
-                              {(styleAnalysis.styleProfile.sentimentScore || 0.3) > 0 ? "Positive" : "Neutral"}
+                              {styleAnalysis.styleProfile.sentimentScore || 0.3 > 0
+                                ? "Positive"
+                                : "Neutral"}
                             </span>
                           </div>
                         </div>
@@ -347,35 +486,54 @@ export default function GeneratePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {styleAnalysis.styleProfile.humorTypes.length > 0 && (
                       <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                        <h5 className="font-medium mb-2 text-green-800 dark:text-green-200">Humor Patterns</h5>
+                        <h5 className="font-medium mb-2 text-green-800 dark:text-green-200">
+                          Humor Patterns
+                        </h5>
                         <div className="flex flex-wrap gap-2">
                           {styleAnalysis.styleProfile.humorTypes.map((humor, index) => (
-                            <span key={index} className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs rounded-full">
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs rounded-full"
+                            >
                               {humor}
                             </span>
                           ))}
                         </div>
                       </div>
                     )}
-                    
+
                     {styleAnalysis.styleProfile.catchphrases.length > 0 && (
                       <div className="p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                        <h5 className="font-medium mb-2 text-purple-800 dark:text-purple-200">Signature Phrases</h5>
+                        <h5 className="font-medium mb-2 text-purple-800 dark:text-purple-200">
+                          Signature Phrases
+                        </h5>
                         <div className="flex flex-wrap gap-2">
-                          {styleAnalysis.styleProfile.catchphrases.slice(0, 4).map((phrase, index) => (
-                            <span key={index} className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs rounded-full">
-                              "{phrase}"
-                            </span>
-                          ))}
+                          {styleAnalysis.styleProfile.catchphrases
+                            .slice(0, 4)
+                            .map((phrase, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs rounded-full"
+                              >
+                                "{phrase}"
+                              </span>
+                            ))}
                         </div>
                       </div>
                     )}
-                  </div>                  {/* Processing Info */}
+                  </div>{" "}
+                  {/* Processing Info */}
                   {styleAnalysis.processingDetails && (
                     <div className="text-xs text-muted-foreground text-center p-3 bg-muted/30 rounded border-l-4 border-blue-500">
-                      ✨ Analysis completed in {styleAnalysis.processingDetails.processingTimeMs}ms • 
-                      {styleAnalysis.processingDetails.linguisticFeatures} linguistic features identified • 
-                      Processed at {new Date(styleAnalysis.processingDetails.analyzedAt).toLocaleString()}
+                      ✨ Analysis completed in{" "}
+                      {styleAnalysis.processingDetails.processingTimeMs}ms •{" "}
+                      {
+                        styleAnalysis.processingDetails.linguisticFeatures
+                      }{" "}
+                      linguistic features identified • Processed at{" "}
+                      {new Date(
+                        styleAnalysis.processingDetails.analyzedAt
+                      ).toLocaleString()}
                     </div>
                   )}
                 </div>
@@ -386,7 +544,8 @@ export default function GeneratePage() {
                   </div>
                   <h3 className="text-lg font-semibold mb-2">Ready to Analyze</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">
-                    Style analysis will begin automatically when the transcript is ready.
+                    Style analysis will begin automatically when the transcript is
+                    ready.
                   </p>
                 </div>
               )}
@@ -399,9 +558,7 @@ export default function GeneratePage() {
       <Card>
         <CardHeader>
           <CardTitle>Script Generation</CardTitle>
-          <CardDescription>
-            Configure your new script
-          </CardDescription>
+          <CardDescription>Configure your new script</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
@@ -414,7 +571,8 @@ export default function GeneratePage() {
               disabled={isGenerating || !styleAnalysis}
             />
             <p className="text-sm text-muted-foreground">
-              Provide a clear, descriptive topic for the script you want to generate
+              Provide a clear, descriptive topic for the script you want to
+              generate
             </p>
           </div>
 
@@ -433,7 +591,9 @@ export default function GeneratePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="instructions">Additional Instructions (Optional)</Label>
+            <Label htmlFor="instructions">
+              Additional Instructions (Optional)
+            </Label>
             <Textarea
               id="instructions"
               placeholder="Any specific requirements or focus areas..."
@@ -453,9 +613,7 @@ export default function GeneratePage() {
           {success && (
             <Alert>
               <CheckIcon className="w-4 h-4" />
-              <AlertDescription>
-                Script generated successfully!
-              </AlertDescription>
+              <AlertDescription>Script generated successfully!</AlertDescription>
             </Alert>
           )}
 
@@ -547,6 +705,57 @@ export default function GeneratePage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Analysis Summary - Expandable Section */}
+      {transcript && styleAnalysis && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <SparklesIcon className="w-5 h-5 text-purple-500" />
+              AI Analysis Summary
+            </CardTitle>
+            <CardDescription>
+              Detailed breakdown of the AI's comprehensive style analysis
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                {isAnalysisExpanded 
+                  ? "Complete AI analysis with detailed insights and patterns" 
+                  : "Click to view the full AI analysis report with detailed insights"
+                }
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)}
+                className="flex items-center gap-2"
+              >
+                {isAnalysisExpanded ? (
+                  <>
+                    <ChevronUpIcon className="w-4 h-4" />
+                    Collapse
+                  </>
+                ) : (
+                  <>
+                    <ChevronDownIcon className="w-4 h-4" />
+                    View Full Analysis
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {isAnalysisExpanded && (
+              <div className="mt-4 p-4 bg-muted/30 rounded-lg border-l-4 border-purple-500 max-h-96 overflow-y-auto">
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  {formatAnalysisText(styleAnalysis.detailedAnalysis)}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
