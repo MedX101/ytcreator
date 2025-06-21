@@ -232,16 +232,15 @@ export default function LibraryPage() {
                           {transcript.originalScript.substring(0, 300)}
                           {transcript.originalScript.length > 300 && "..."}
                         </p>
-                      </div>
-                      {transcript.status === 'completed' && (
-                        <div className="flex gap-2 mt-4">
+                      </div>                      {transcript.status === 'completed' && (
+                        <div className="flex flex-col sm:flex-row gap-2 mt-4">
                           <Link to={`/dashboard/youtube/generate?transcript=${transcript._id}`}>
-                            <Button size="sm">
+                            <Button size="sm" className="w-full sm:w-auto">
                               Generate New Script
                             </Button>
                           </Link>
                           <Link to={`/dashboard/youtube/refine?transcript=${transcript._id}`}>
-                            <Button size="sm" variant="outline">
+                            <Button size="sm" variant="outline" className="w-full sm:w-auto">
                               Refine Existing Script
                             </Button>
                           </Link>
