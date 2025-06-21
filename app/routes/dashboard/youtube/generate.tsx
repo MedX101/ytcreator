@@ -540,7 +540,7 @@ export default function GeneratePage() {
                   <div className="mt-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-semibold text-muted-foreground">
-                        AI Analysis Summary
+                        Analysis Summary
                       </h4>
                       <Button
                         variant="outline"
