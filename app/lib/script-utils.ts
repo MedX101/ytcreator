@@ -49,11 +49,13 @@ export function cleanScriptForReading(script: string): string {
     if (/^\([^)]*\)$/.test(trimmedLine)) continue;
       // Skip lines that are purely visual/production instructions in brackets
     if (/^\[[^\]]*\]$/.test(trimmedLine)) continue;
-    
-    // Skip lines that contain VISUAL/ACTION instructions in brackets
+      // Skip lines that contain VISUAL/ACTION instructions in brackets
     if (/^\[VISUAL[^\]]*\]$/i.test(trimmedLine)) continue;
     if (/^\[ACTION[^\]]*\]$/i.test(trimmedLine)) continue;
     if (/^\[VISUAL\/ACTION[^\]]*\]$/i.test(trimmedLine)) continue;
+    
+    // Skip lines that are just asterisks (*, **, ***, etc.) - decorative separators
+    if (/^\*+$/.test(trimmedLine)) continue;
     
     // Skip lines that are just music or sound cues
     if (/^\[.*music.*\]$/i.test(trimmedLine)) continue;
@@ -101,9 +103,11 @@ export function cleanScriptForReading(script: string): string {
       // Clean up extra spaces
       .replace(/\s+/g, ' ')
       .trim();
-    
-    // Skip if the line becomes empty after cleaning
+      // Skip if the line becomes empty after cleaning
     if (!cleanedLine) continue;
+    
+    // Skip lines that are just asterisks after cleaning (*, **, ***, etc.)
+    if (/^\*+$/.test(cleanedLine)) continue;
     
     // Skip lines that are still mostly production cues after cleaning
     if (/^(Visual|Audio|Music|Sound|SFX):/i.test(cleanedLine)) continue;
