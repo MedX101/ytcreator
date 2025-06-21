@@ -646,9 +646,7 @@ export default function RefinePage() {
                 />
                 <p className="text-xs text-muted-foreground">
                   Paste the script content you want to refine using the selected creator's style
-                </p>
-              </div>
-            )}
+                </p>              </div>
             )}
           </CardContent>
         </Card>
