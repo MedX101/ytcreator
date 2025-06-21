@@ -676,3 +676,119 @@ export const refineCustomScript = action({
     }
   },
 });
+
+// ACTION - AI-enhanced script cleaning
+export const cleanScriptWithAI = action({
+  args: {
+    script: v.string(),
+    useAI: v.optional(v.boolean()),
+  },
+  handler: async (ctx, { script, useAI = true }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!useAI) {
+        // Use basic rule-based cleaning
+        return { cleanedScript: basicCleanScript(script) };
+      }
+
+      // Use AI for intelligent script cleaning
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `
+        Please clean this YouTube script for AI voice-over and human reading. The goal is to make it sound natural and human-like when spoken aloud.
+
+        INSTRUCTIONS:
+        1. Remove ALL production elements: timestamps, visual cues, audio cues, production notes
+        2. Remove section headers like "Intro - Visual:", "Outro - Audio:", etc.
+        3. Remove speaker labels (Speaker 1:, Host:, etc.) 
+        4. Remove formatting markers (**/**, bullet points, dashes)
+        5. Remove content in brackets [music], [sound effects], etc.
+        6. Remove content in parentheses that are production notes (Visual cue:, etc.)
+        7. Keep ONLY the actual spoken content that a human would say
+        8. Maintain natural line breaks and pacing for human speech
+        9. Fix any grammatical issues or awkward phrasing
+        10. Ensure proper punctuation and capitalization
+
+        IMPORTANT: 
+        - This is for AI voice-over, so it should sound natural when read aloud
+        - Keep the conversational tone and personality
+        - Each line should flow naturally into the next
+        - Don't combine everything into one paragraph - maintain natural speech rhythm
+        - Remove any technical jargon that wouldn't be spoken naturally
+
+        Original Script:
+        ${script}
+
+        Please return ONLY the cleaned script, nothing else.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const cleanedScript = result.response.text().trim();
+
+      return { cleanedScript };
+    } catch (error) {
+      console.error("Error cleaning script with AI:", error);
+      // Fallback to basic cleaning if AI fails
+      return { cleanedScript: basicCleanScript(script) };
+    }
+  },
+});
+
+// Helper function for basic rule-based cleaning (fallback)
+function basicCleanScript(script: string): string {
+  if (!script) return '';
+  
+  const lines = script.split('\n');
+  const cleanedLines: string[] = [];
+  
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    
+    // Skip empty lines
+    if (!trimmedLine) continue;
+    
+    // Skip timestamp patterns
+    if (/^\[\d+:\d+\]/.test(trimmedLine)) continue;
+    
+    // Skip section headers with visual/audio cues
+    if (/^[A-Za-z\s]+ - (Visual|Audio|Music|Sound|SFX):/i.test(trimmedLine)) continue;
+    
+    // Skip visual/production cues
+    if (/^(Visual|Audio|Music|Sound|SFX)\s*[-:]/.test(trimmedLine)) continue;
+    if (/^\*\*(Visual|Audio|Music|Sound|SFX)\*\*:/i.test(trimmedLine)) continue;
+    
+    // Skip pure production instructions
+    if (/^\([^)]*\)$/.test(trimmedLine)) continue;
+    if (/^\[[^\]]*\]$/.test(trimmedLine)) continue;
+    if (/^\[.*music.*\]$/i.test(trimmedLine)) continue;
+    
+    // Clean up the line
+    let cleanedLine = trimmedLine
+      .replace(/^\[\d+:\d+\]\s*-?\s*/, '') // Remove timestamps
+      .replace(/^(Speaker \d+|Host|Narrator|Interviewer|Guest):\s*/i, '') // Remove speaker labels
+      .replace(/\*\*(Visual|Audio|Music|Sound|SFX)\*\*:\s*[^\n]*/gi, '') // Remove markers
+      .replace(/\([^)]*visual[^)]*\)/gi, '') // Remove visual cues
+      .replace(/\([^)]*music[^)]*\)/gi, '') // Remove music cues
+      .replace(/\([^)]*sound[^)]*\)/gi, '') // Remove sound cues
+      .replace(/\([^)]*audio[^)]*\)/gi, '') // Remove audio cues
+      .replace(/\([^)]*animation[^)]*\)/gi, '') // Remove animation cues
+      .replace(/^[•\-\*]\s*/, '') // Remove bullet points
+      .replace(/\s+/g, ' ') // Clean up spaces
+      .trim();
+    
+    // Skip if empty after cleaning
+    if (!cleanedLine) continue;
+    
+    // Skip remaining production cues
+    if (/^(Visual|Audio|Music|Sound|SFX):/i.test(cleanedLine)) continue;
+    if (/^(Show|Display|Cut to|Fade|Zoom|Pan):/i.test(cleanedLine)) continue;
+    
+    cleanedLines.push(cleanedLine);
+  }
+  
+  return cleanedLines.join('\n').trim();
+}
