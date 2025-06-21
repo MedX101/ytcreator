@@ -130,26 +130,53 @@ const cleanScriptForVoiceOver = (script: string): string => {
   if (!script) return "";
 
   return script
-    // Remove timestamps like [00:00] or (0:30)
-    .replace(/\[?\d{1,2}:\d{2}(?::\d{2})?\]?/g, "")
-    .replace(/\(\d{1,2}:\d{2}(?::\d{2})?\)/g, "")
-    // Remove scene descriptions in brackets or parentheses
-    .replace(/\[([^\]]*)\]/g, "")
-    .replace(/\(([^)]*visual[^)]*)\)/gi, "")
-    .replace(/\(([^)]*scene[^)]*)\)/gi, "")
-    .replace(/\(([^)]*music[^)]*)\)/gi, "")
-    .replace(/\(([^)]*sound[^)]*)\)/gi, "")
-    // Remove video editing markers
-    .replace(/--+/g, "")
-    .replace(/={2,}/g, "")
-    .replace(/\*{2,}/g, "")
-    // Remove bullet points and dashes at start of lines
-    .replace(/^[\s]*[-•*]\s*/gm, "")
-    // Remove multiple spaces and clean up
-    .replace(/\s{2,}/g, " ")
-    // Remove empty lines and clean up paragraphs
-    .split("\n")
-    .map((line) => line.trim())
+    // Remove ALL timestamps in any format
+    .replace(/\[[0-9:.,\s]*\]/g, '')
+    .replace(/\([0-9:.,\s]*\)/g, '')
+    .replace(/\{[0-9:.,\s]*\}/g, '')
+    .replace(/[0-9]+:[0-9]+[:-][0-9]+/g, '')
+    .replace(/[0-9]+:[0-9]+/g, '')
+    
+    // Remove ALL dashes, bullets, and list markers
+    .replace(/^[\s]*[-•\-–—]\s*/gm, '')
+    .replace(/[\s]*[-•\-–—][\s]*/g, ' ')
+    
+    // Remove ALL markdown and formatting
+    .replace(/\*\*\*(.*?)\*\*\*/g, '$1') // ***bold italic*** -> text
+    .replace(/\*\*(.*?)\*\*/g, '$1') // **bold** -> text
+    .replace(/\*(.*?)\*/g, '$1') // *italic* -> text
+    .replace(/__(.*?)__/g, '$1') // __underline__ -> text
+    .replace(/_(.*?)_/g, '$1') // _italic_ -> text
+    .replace(/`(.*?)`/g, '$1') // `code` -> text
+    .replace(/~~(.*?)~~/g, '$1') // ~~strikethrough~~ -> text
+    
+    // Remove ALL brackets and parentheses content that looks like stage directions
+    .replace(/\[(.*?)\]/g, '') // [stage direction]
+    .replace(/\((.*?)\)/g, '') // (stage direction)
+    .replace(/\{(.*?)\}/g, '') // {stage direction}
+    
+    // Remove special characters and symbols
+    .replace(/[#\*\-_~`>|]/g, '')
+    .replace(/[→←↑↓]/g, '')
+    .replace(/[""'']/g, '"') // Replace smart quotes with regular quotes
+    
+    // Remove section headers and dividers
+    .replace(/^[\s]*={3,}.*$/gm, '') // === headers ===
+    .replace(/^[\s]*-{3,}.*$/gm, '') // --- dividers ---
+    .replace(/^[\s]*\*{3,}.*$/gm, '') // *** dividers ***
+    
+    // Clean up spacing and line breaks
+    .replace(/\n{3,}/g, '\n\n') // Max 2 line breaks
+    .replace(/[\s]{2,}/g, ' ') // Multiple spaces -> single space
+    .replace(/^\s+/gm, '') // Remove leading spaces
+    .replace(/\s+$/gm, '') // Remove trailing spaces
+    
+    // Clean up sentences
+    .replace(/\.\s*\./g, '.') // Remove double periods
+    .replace(/\?\s*\?/g, '?') // Remove double question marks
+    .replace(/!\s*!/g, '!') // Remove double exclamation marks
+    
+    .split("\n")    .map((line) => line.trim())
     .filter((line) => line.length > 0)
     .join("\n\n")
     .trim();
