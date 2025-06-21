@@ -124,8 +124,37 @@ const formatAnalysisText = (text: string) => {
       </div>
     );
   }
+    return <div className="space-y-2">{elements}</div>;
+};
+
+// Function to clean script for voice-over (remove timestamps, dashes, parentheses, etc.)
+const cleanScriptForVoiceOver = (script: string): string => {
+  if (!script) return "";
   
-  return <div className="space-y-2">{elements}</div>;
+  return script
+    // Remove timestamps like [00:00] or (0:30)
+    .replace(/\[?\d{1,2}:\d{2}(?::\d{2})?\]?/g, "")
+    .replace(/\(\d{1,2}:\d{2}(?::\d{2})?\)/g, "")
+    // Remove scene descriptions in brackets or parentheses
+    .replace(/\[([^\]]*)\]/g, "")
+    .replace(/\(([^)]*visual[^)]*)\)/gi, "")
+    .replace(/\(([^)]*scene[^)]*)\)/gi, "")
+    .replace(/\(([^)]*music[^)]*)\)/gi, "")
+    .replace(/\(([^)]*sound[^)]*)\)/gi, "")
+    // Remove video editing markers
+    .replace(/--+/g, "")
+    .replace(/={2,}/g, "")
+    .replace(/\*{2,}/g, "")
+    // Remove bullet points and dashes at start of lines
+    .replace(/^[\s]*[-•*]\s*/gm, "")
+    // Remove multiple spaces and clean up
+    .replace(/\s{2,}/g, " ")
+    // Remove empty lines and clean up paragraphs
+    .split("\n")
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .join("\n\n")
+    .trim();
 };
 
 export default function RefinePage() {
@@ -138,10 +167,10 @@ export default function RefinePage() {
   const [isRefining, setIsRefining] = useState(false);
   const [refinedScript, setRefinedScript] = useState("");
   const [error, setError] = useState("");  const [success, setSuccess] = useState(false);
-  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
-  // New states for custom script input
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);  // New states for custom script input
   const [useCustomScript, setUseCustomScript] = useState(false);
   const [customScript, setCustomScript] = useState("");
+  const [useCleanScript, setUseCleanScript] = useState(false);
   const refineScript = useAction(api.youtube.refineScript);
   const refineCustomScript = useAction(api.youtube.refineCustomScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
@@ -238,17 +267,18 @@ export default function RefinePage() {
       reader.readAsText(file);
     }
   };
-
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(refinedScript);
+    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript;
+    navigator.clipboard.writeText(scriptToUse);
   };
 
   const downloadScript = () => {
-    const blob = new Blob([refinedScript], { type: 'text/plain' });
+    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript;
+    const blob = new Blob([scriptToUse], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'refined-script.txt';
+    a.download = `refined-script${useCleanScript ? "_clean" : ""}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -767,10 +797,26 @@ export default function RefinePage() {
             <CardDescription>
               Your script transformed to match the reference style
             </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          </CardHeader>          <CardContent className="space-y-4">
+            {/* Clean Script Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <input
+                type="checkbox"
+                id="clean-script-toggle-refine"
+                checked={useCleanScript}
+                onChange={(e) => setUseCleanScript(e.target.checked)}
+                className="w-4 h-4 text-primary"
+              />
+              <label htmlFor="clean-script-toggle-refine" className="text-sm font-medium">
+                Clean Script (Voice-Over Ready)
+              </label>
+              <span className="text-xs text-muted-foreground">
+                Remove timestamps and formatting for AI voice-over
+              </span>
+            </div>
+            
             <Textarea
-              value={refinedScript}
+              value={useCleanScript ? cleanScriptForVoiceOver(refinedScript) : refinedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />

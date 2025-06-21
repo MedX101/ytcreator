@@ -125,6 +125,36 @@ const formatAnalysisText = (text: string) => {
   return elements;
 };
 
+// Function to clean script for voice-over (remove timestamps, dashes, parentheses, etc.)
+const cleanScriptForVoiceOver = (script: string): string => {
+  if (!script) return "";
+
+  return script
+    // Remove timestamps like [00:00] or (0:30)
+    .replace(/\[?\d{1,2}:\d{2}(?::\d{2})?\]?/g, "")
+    .replace(/\(\d{1,2}:\d{2}(?::\d{2})?\)/g, "")
+    // Remove scene descriptions in brackets or parentheses
+    .replace(/\[([^\]]*)\]/g, "")
+    .replace(/\(([^)]*visual[^)]*)\)/gi, "")
+    .replace(/\(([^)]*scene[^)]*)\)/gi, "")
+    .replace(/\(([^)]*music[^)]*)\)/gi, "")
+    .replace(/\(([^)]*sound[^)]*)\)/gi, "")
+    // Remove video editing markers
+    .replace(/--+/g, "")
+    .replace(/={2,}/g, "")
+    .replace(/\*{2,}/g, "")
+    // Remove bullet points and dashes at start of lines
+    .replace(/^[\s]*[-•*]\s*/gm, "")
+    // Remove multiple spaces and clean up
+    .replace(/\s{2,}/g, " ")
+    // Remove empty lines and clean up paragraphs
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .join("\n\n")
+    .trim();
+};
+
 export default function GeneratePage() {
   const { userId } = useAuth();
   const [searchParams] = useSearchParams();
@@ -134,9 +164,9 @@ export default function GeneratePage() {
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [generatedScript, setGeneratedScript] = useState("");  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [generatedScript, setGeneratedScript] = useState("");  const [error, setError] = useState("");  const [success, setSuccess] = useState(false);
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
+  const [useCleanScript, setUseCleanScript] = useState(false);
 
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
   const generateScript = useAction(api.youtube.generateScript);
@@ -202,17 +232,18 @@ export default function GeneratePage() {
       setIsGenerating(false);
     }
   };
-
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedScript);
+    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(generatedScript) : generatedScript;
+    navigator.clipboard.writeText(scriptToUse);
   };
 
   const downloadScript = () => {
-    const blob = new Blob([generatedScript], { type: "text/plain" });
+    const scriptToUse = useCleanScript ? cleanScriptForVoiceOver(generatedScript) : generatedScript;
+    const blob = new Blob([scriptToUse], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${topic || "script"}.txt`;
+    a.download = `${topic || "script"}${useCleanScript ? "_clean" : ""}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -693,10 +724,26 @@ export default function GeneratePage() {
             <CardDescription>
               Your script in the analyzed style
             </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          </CardHeader>          <CardContent className="space-y-4">
+            {/* Clean Script Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <input
+                type="checkbox"
+                id="clean-script-toggle"
+                checked={useCleanScript}
+                onChange={(e) => setUseCleanScript(e.target.checked)}
+                className="w-4 h-4 text-primary"
+              />
+              <label htmlFor="clean-script-toggle" className="text-sm font-medium">
+                Clean Script (Voice-Over Ready)
+              </label>
+              <span className="text-xs text-muted-foreground">
+                Remove timestamps and formatting for AI voice-over
+              </span>
+            </div>
+            
             <Textarea
-              value={generatedScript}
+              value={useCleanScript ? cleanScriptForVoiceOver(generatedScript) : generatedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />
