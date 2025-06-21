@@ -124,106 +124,8 @@ const formatAnalysisText = (text: string) => {
       </div>
     );
   }
-    return <div className="space-y-2">{elements}</div>;
-};
-
-// Function to format script markdown into proper JSX
-const formatScriptMarkdown = (text: string) => {
-  if (!text) return null;
-
-  const lines = text.split('\n');
-  const elements = [];
-  let currentSection = [];
-
-  lines.forEach((line, index) => {
-    const trimmed = line.trim();
-    
-    // Main headers (### or # or ***)
-    if (trimmed.match(/^#{1,3}\s+/) || trimmed.match(/^\*{3}(.+?)\*{3}$/)) {
-      // Process previous section
-      if (currentSection.length > 0) {
-        elements.push(
-          <div key={`section-${elements.length}`} className="mb-4">
-            {currentSection.map((content, idx) => (
-              <p key={idx} className="text-sm leading-relaxed mb-2">{content}</p>
-            ))}
-          </div>
-        );
-        currentSection = [];
-      }
-      
-      // Add header
-      const headerText = trimmed
-        .replace(/^#{1,3}\s+/, '')
-        .replace(/^\*{3}(.+?)\*{3}$/, '$1');
-      elements.push(
-        <div key={`header-${elements.length}`} className="mb-3">
-          <h3 className="text-lg font-bold text-foreground border-b border-primary/20 pb-1">
-            {headerText}
-          </h3>
-        </div>
-      );
-    }
-    // Subheaders (**text**)
-    else if (trimmed.match(/^\*{2}(.+?)\*{2}$/)) {
-      const subheaderText = trimmed.replace(/^\*{2}(.+?)\*{2}$/, '$1');
-      elements.push(
-        <div key={`subheader-${elements.length}`} className="mb-2">
-          <h4 className="text-base font-semibold text-blue-600 dark:text-blue-400">
-            {subheaderText}
-          </h4>
-        </div>
-      );
-    }
-    // Timestamp lines [00:00]
-    else if (trimmed.match(/\[\d{1,2}:\d{2}\]/)) {
-      const processedLine = trimmed.replace(/\*{1,2}(.+?)\*{1,2}/g, '$1');
-      elements.push(
-        <div key={`timestamp-${elements.length}`} className="mb-2 pl-4 border-l-2 border-blue-200">
-          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-            {processedLine}
-          </p>
-        </div>
-      );
-    }
-    // Regular content lines
-    else if (trimmed.length > 0) {
-      const cleanLine = trimmed.replace(/\*{1,2}(.+?)\*{1,2}/g, '$1');
-      currentSection.push(cleanLine);
-    }
-    // Empty lines - process current section
-    else if (currentSection.length > 0) {
-      elements.push(
-        <div key={`section-${elements.length}`} className="mb-4">
-          {currentSection.map((content, idx) => (
-            <p key={idx} className="text-sm leading-relaxed mb-2">{content}</p>
-          ))}
-        </div>
-      );
-      currentSection = [];
-    }
-  });
-
-  // Process final section
-  if (currentSection.length > 0) {
-    elements.push(
-      <div key={`final-section`} className="mb-4">
-        {currentSection.map((content, idx) => (
-          <p key={idx} className="text-sm leading-relaxed mb-2">{content}</p>
-        ))}
-      </div>
-    );
-  }
-
-  return elements.length > 0 ? elements : (
-    <div className="space-y-2">
-      {text.split('\n').filter(line => line.trim()).map((line, index) => (
-        <p key={index} className="text-sm leading-relaxed">
-          {line.replace(/\*{1,3}(.+?)\*{1,3}/g, '$1')}
-        </p>
-      ))}
-    </div>
-  );
+  
+  return <div className="space-y-2">{elements}</div>;
 };
 
 export default function RefinePage() {
@@ -865,12 +767,13 @@ export default function RefinePage() {
             <CardDescription>
               Your script transformed to match the reference style
             </CardDescription>
-          </CardHeader>          <CardContent className="space-y-4">
-            <div className="min-h-[400px] p-4 border rounded-lg bg-muted/50 max-h-[600px] overflow-y-auto">
-              <div className="space-y-3">
-                {formatScriptMarkdown(refinedScript)}
-              </div>
-            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea
+              value={refinedScript}
+              readOnly
+              className="min-h-[400px] font-mono text-sm"
+            />
             <div className="flex gap-2">
               <Button
                 onClick={copyToClipboard}
