@@ -142,15 +142,11 @@ export default function RefinePage() {
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
   // New states for custom script input
   const [useCustomScript, setUseCustomScript] = useState(false);
-  const [customScript, setCustomScript] = useState("");  const [useCleanScript, setUseCleanScript] = useState(false);
-  const [useAIClean, setUseAIClean] = useState(false);
-  const [isAICleaningInProgress, setIsAICleaningInProgress] = useState(false);
-  const [aiCleanedScript, setAiCleanedScript] = useState("");
-  
+  const [customScript, setCustomScript] = useState("");
+  const [useCleanScript, setUseCleanScript] = useState(false);
   const refineScript = useAction(api.youtube.refineScript);
   const refineCustomScript = useAction(api.youtube.refineCustomScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
-  const cleanScriptAction = useAction(api.youtube.cleanScriptWithAI);
   
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
   const userScripts = useQuery(api.youtube.getUserScripts);
@@ -258,29 +254,6 @@ export default function RefinePage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
-
-  // AI Script Cleaning function
-  const handleAIClean = async () => {
-    if (!refinedScript.trim()) {
-      setError("No script content to clean");
-      return;
-    }
-
-    setIsAICleaningInProgress(true);
-    setError("");
-    
-    try {
-      const result = await cleanScriptAction({ script: refinedScript, useAI: true });
-      setAiCleanedScript(result.cleanedScript);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
-      console.error("AI cleaning error:", err);
-      setError("Failed to clean script with AI. Please try again.");
-    } finally {
-      setIsAICleaningInProgress(false);
-    }
   };
 
   const completedTranscripts = userTranscripts?.filter(t => t.status === 'completed') || [];
@@ -794,126 +767,56 @@ export default function RefinePage() {
               Your script transformed to match the reference style
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">            {/* Script Cleaning Options */}
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="clean-refined-script-toggle"
-                  checked={useCleanScript}
-                  onChange={(e) => setUseCleanScript(e.target.checked)}
-                  className="w-4 h-4 text-primary"
-                />
-                <Label htmlFor="clean-refined-script-toggle" className="text-sm font-medium cursor-pointer">
-                  Basic clean (removes timestamps, symbols)
-                </Label>
-              </div>
-              
-              <div className="flex items-center space-x-2 p-3 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="ai-clean-script-toggle"
-                  checked={useAIClean}
-                  onChange={(e) => setUseAIClean(e.target.checked)}
-                  className="w-4 h-4 text-primary"
-                />
-                <Label htmlFor="ai-clean-script-toggle" className="text-sm font-medium cursor-pointer flex items-center">
-                  <SparklesIcon className="w-4 h-4 mr-1 text-purple-600" />
-                  AI Enhanced Clean (intelligent cleaning for perfect voice-over)
-                </Label>
-                {useAIClean && (
-                  <Button
-                    onClick={handleAIClean}
-                    disabled={isAICleaningInProgress}
-                    variant="outline"
-                    size="sm"
-                    className="ml-auto"
-                  >
-                    {isAICleaningInProgress ? (
-                      <>
-                        <Loader2Icon className="w-4 h-4 mr-2 animate-spin" />
-                        Cleaning...
-                      </>
-                    ) : (
-                      <>
-                        <SparklesIcon className="w-4 h-4 mr-2" />
-                        Clean with AI
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
+          <CardContent className="space-y-4">
+            {/* Clean Script Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <input
+                type="checkbox"
+                id="clean-refined-script-toggle"
+                checked={useCleanScript}
+                onChange={(e) => setUseCleanScript(e.target.checked)}
+                className="w-4 h-4 text-primary"
+              />
+              <Label htmlFor="clean-refined-script-toggle" className="text-sm font-medium cursor-pointer">
+                Clean script for AI voice-over (removes timestamps, symbols)
+              </Label>
             </div>
-              <Textarea
-              value={
-                useAIClean && aiCleanedScript ? aiCleanedScript :
-                useCleanScript ? cleanScriptForReading(refinedScript) : 
-                refinedScript
-              }
+            
+            <Textarea
+              value={useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript}
               readOnly
               className="min-h-[400px] font-mono text-sm"
             />
-            <div className="flex gap-2">              <Button
+            <div className="flex gap-2">
+              <Button
                 onClick={() => {
-                  const scriptContent = 
-                    useAIClean && aiCleanedScript ? aiCleanedScript :
-                    useCleanScript ? cleanScriptForReading(refinedScript) : 
-                    refinedScript;
+                  const scriptContent = useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript;
                   copyToClipboard(scriptContent);
                 }}
                 variant="outline"
                 size="sm"
-                title={
-                  useAIClean && aiCleanedScript ? "Copy AI-Cleaned Script (Premium quality)" :
-                  useCleanScript ? "Copy Clean Script (AI voice-over ready)" : 
-                  "Copy Original Script"
-                }
+                title={useCleanScript ? "Copy Clean Script (AI voice-over ready)" : "Copy Original Script"}
               >
                 <CopyIcon className="w-4 h-4 mr-2" />
                 Copy to Clipboard
-              </Button>              <Button
+              </Button>
+              <Button
                 onClick={() => {
-                  const scriptContent = 
-                    useAIClean && aiCleanedScript ? aiCleanedScript :
-                    useCleanScript ? cleanScriptForReading(refinedScript) : 
-                    refinedScript;
-                  const filename = `refined-script${useAIClean && aiCleanedScript ? '_ai-clean' : useCleanScript ? '_clean' : ''}.txt`;
+                  const scriptContent = useCleanScript ? cleanScriptForReading(refinedScript) : refinedScript;
+                  const filename = `refined-script${useCleanScript ? '_clean' : ''}.txt`;
                   downloadScript(scriptContent, filename);
                 }}
                 variant="outline"
                 size="sm"
-                title={
-                  useAIClean && aiCleanedScript ? "Download AI-Cleaned Script (Premium quality)" :
-                  useCleanScript ? "Download Clean Script (AI voice-over ready)" : 
-                  "Download Original Script"
-                }
+                title={useCleanScript ? "Download Clean Script (AI voice-over ready)" : "Download Original Script"}
               >
                 <DownloadIcon className="w-4 h-4 mr-2" />
                 Download
-              </Button>            </div>
-            {useCleanScript && !useAIClean && (
+              </Button>
+            </div>
+            {useCleanScript && (
               <div className="text-xs text-muted-foreground p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
-                <span className="font-medium">Basic clean mode:</span> Timestamps, symbols, and formatting removed for AI voice-over.
-              </div>
-            )}
-            {useAIClean && (
-              <div className="text-xs text-muted-foreground p-3 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded border border-purple-200 dark:border-purple-800">
-                <div className="flex items-center mb-2">
-                  <SparklesIcon className="w-4 h-4 mr-2 text-purple-600" />
-                  <span className="font-medium text-purple-800 dark:text-purple-200">AI Enhanced Cleaning:</span>
-                </div>
-                <ul className="text-xs space-y-1 ml-6">
-                  <li>• Intelligent context understanding</li>
-                  <li>• Natural human speech flow</li>
-                  <li>• Perfect grammar and punctuation</li>
-                  <li>• Preserves conversational tone</li>
-                  <li>• Optimized for AI voice-over</li>
-                </ul>
-                {!aiCleanedScript && (
-                  <div className="mt-2 text-orange-600 dark:text-orange-400">
-                    Click "Clean with AI" to generate the enhanced version
-                  </div>
-                )}
+                <span className="font-medium">Clean script mode:</span> Timestamps, symbols, and formatting removed for AI voice-over or natural reading.
               </div>
             )}
           </CardContent>

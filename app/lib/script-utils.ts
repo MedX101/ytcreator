@@ -90,20 +90,3 @@ export function cleanScriptForReading(script: string): string {
   // Join with single newlines to maintain natural reading flow
   return cleanedLines.join('\n').trim();
 }
-
-/**
- * AI-enhanced script cleaning function
- * Uses AI to intelligently clean scripts for human voice delivery
- * @param script - The original script content
- * @param useAI - Whether to use AI cleaning (requires Convex backend)
- * @returns Promise<string> - Clean, human-readable script
- */
-export async function cleanScriptWithAI(script: string, cleanScriptAction: any): Promise<string> {
-  try {
-    const result = await cleanScriptAction({ script, useAI: true });
-    return result.cleanedScript;
-  } catch (error) {
-    console.error("AI cleaning failed, falling back to basic cleaning:", error);
-    return cleanScriptForReading(script);
-  }
-}
