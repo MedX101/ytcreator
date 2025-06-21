@@ -116,11 +116,13 @@ export default function RefinePage() {
   const [refinementInstructions, setRefinementInstructions] = useState("");
   const [isRefining, setIsRefining] = useState(false);
   const [refinedScript, setRefinedScript] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");  const [success, setSuccess] = useState(false);
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
-
+  // New states for custom script input
+  const [useCustomScript, setUseCustomScript] = useState(false);
+  const [customScript, setCustomScript] = useState("");
   const refineScript = useAction(api.youtube.refineScript);
+  const refineCustomScript = useAction(api.youtube.refineCustomScript);
   const analyzeStyle = useAction(api.youtube.analyzeStyle);
   
   const userTranscripts = useQuery(api.youtube.getUserTranscripts);
@@ -159,10 +161,14 @@ export default function RefinePage() {
     } catch (err: any) {
       setError(err.message || "Failed to analyze style");
     }
-  };
-
-  const handleRefine = async () => {
-    if (!refinementInstructions.trim() || !selectedScriptId || !userId) return;
+  };  const handleRefine = async () => {
+    // For custom script: check if we have custom script and instructions
+    // For generated script: check if we have selected script and instructions
+    const hasValidInput = useCustomScript 
+      ? (customScript.trim() && refinementInstructions.trim())
+      : (selectedScriptId && refinementInstructions.trim());
+    
+    if (!hasValidInput || !userId) return;
 
     setIsRefining(true);
     setError("");
@@ -170,14 +176,28 @@ export default function RefinePage() {
     setSuccess(false);
 
     try {
-      const result = await refineScript({
-        scriptId: selectedScriptId as any,
-        refinementInstructions: refinementInstructions.trim(),
-      });
+      if (useCustomScript) {
+        // Use the new custom script refinement action
+        const result = await refineCustomScript({
+          customScript: customScript.trim(),
+          refinementInstructions: refinementInstructions.trim(),
+        });
 
-      if (result.script) {
-        setRefinedScript(result.script);
-        setSuccess(true);
+        if (result.script) {
+          setRefinedScript(result.script);
+          setSuccess(true);
+        }
+      } else {
+        // Original logic for generated scripts
+        const result = await refineScript({
+          scriptId: selectedScriptId as any,
+          refinementInstructions: refinementInstructions.trim(),
+        });
+
+        if (result.script) {
+          setRefinedScript(result.script);
+          setSuccess(true);
+        }
       }
     } catch (err: any) {
       setError(err.message || "Failed to refine script");
@@ -518,66 +538,117 @@ export default function RefinePage() {
             </Link>
           )}
         </CardContent>
-      </Card>
-
-      {/* Script Selection */}
+      </Card>      {/* Script Selection */}
       {selectedTranscriptId && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Script to Refine</CardTitle>
+            <CardTitle>Choose Script Source</CardTitle>
             <CardDescription>
-              Choose an existing script to refine with the selected style
+              Select whether to refine a generated script or paste your own script
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {availableScripts.length === 0 ? (
-              <Alert>
-                <AlertDescription>
-                  No scripts found. Generate a script first to refine it.
-                </AlertDescription>
-              </Alert>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="script-select">Script to Refine</Label>
-                <Select
-                  value={selectedScriptId}
-                  onValueChange={setSelectedScriptId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a script to refine" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableScripts.map((script) => (
-                      <SelectItem key={script._id} value={script._id}>
-                        {script.inputTitle || "Untitled Script"}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {selectedScript && (
-              <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-                <h4 className="font-medium mb-2">Current Script:</h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  <span className="font-medium">Topic:</span> {selectedScript.inputTitle}
-                </p>
-                <Textarea
-                  value={selectedScript.outputScript?.substring(0, 300) + "..."}
-                  readOnly
-                  className="text-sm"
-                  rows={3}
+            {/* Toggle between generated and custom script */}
+            <div className="flex items-center space-x-4 p-3 bg-muted/50 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="generated-script"
+                  name="script-source"
+                  checked={!useCustomScript}
+                  onChange={() => setUseCustomScript(false)}
+                  className="w-4 h-4 text-primary"
                 />
+                <label htmlFor="generated-script" className="text-sm font-medium">
+                  Refine Generated Script
+                </label>
               </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="custom-script"
+                  name="script-source"
+                  checked={useCustomScript}
+                  onChange={() => setUseCustomScript(true)}
+                  className="w-4 h-4 text-primary"
+                />
+                <label htmlFor="custom-script" className="text-sm font-medium">
+                  Refine My Own Script
+                </label>
+              </div>
+            </div>
+
+            {/* Generated Script Selection */}
+            {!useCustomScript && (
+              <>
+                {availableScripts.length === 0 ? (
+                  <Alert>
+                    <AlertDescription>
+                      No scripts found. Generate a script first to refine it.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="script-select">Script to Refine</Label>
+                    <Select
+                      value={selectedScriptId}
+                      onValueChange={setSelectedScriptId}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a script to refine" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableScripts.map((script) => (
+                          <SelectItem key={script._id} value={script._id}>
+                            {script.inputTitle || "Untitled Script"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {selectedScript && (
+                  <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">Current Script:</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      <span className="font-medium">Topic:</span> {selectedScript.inputTitle}
+                    </p>
+                    <Textarea
+                      value={selectedScript.outputScript?.substring(0, 300) + "..."}
+                      readOnly
+                      className="text-sm"
+                      rows={3}
+                    />
+                  </div>
+                )}
+
+                {availableScripts.length === 0 && (
+                  <Link to="/dashboard/youtube/generate">
+                    <Button className="w-full">
+                      Generate a Script First
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
 
-            {availableScripts.length === 0 && (
-              <Link to="/dashboard/youtube/generate">
-                <Button className="w-full">
-                  Generate a Script First
-                </Button>
-              </Link>
+            {/* Custom Script Input */}
+            {useCustomScript && (
+              <div className="space-y-2">
+                <Label htmlFor="custom-script-input">Paste Your Script Here</Label>
+                <Textarea
+                  id="custom-script-input"
+                  placeholder="Paste your script content here that you want to refine..."
+                  value={customScript}
+                  onChange={(e) => setCustomScript(e.target.value)}
+                  className="min-h-[200px]"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Paste the script content you want to refine using the selected creator's style
+                </p>
+              </div>
+            )}
             )}
           </CardContent>
         </Card>
@@ -642,11 +713,14 @@ export default function RefinePage() {
                   Script refined successfully!
                 </AlertDescription>
               </Alert>
-            )}
-
-            <Button
+            )}            <Button
               onClick={handleRefine}
-              disabled={!refinementInstructions.trim() || isRefining || !styleAnalysis}
+              disabled={
+                !refinementInstructions.trim() || 
+                isRefining || 
+                !styleAnalysis ||
+                (useCustomScript ? !customScript.trim() : !selectedScriptId)
+              }
               className="w-full"
               size="lg"
             >

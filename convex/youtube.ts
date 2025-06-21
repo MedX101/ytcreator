@@ -630,3 +630,49 @@ export const getScript = query({
     return script;
   },
 });
+
+// ACTION - Refine custom script pasted by user
+export const refineCustomScript = action({
+  args: {
+    customScript: v.string(),
+    refinementInstructions: v.string(),
+  },
+  handler: async (ctx, { customScript, refinementInstructions }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      // Use Gemini to refine the custom script
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `
+        Please refine the following custom script based on these instructions:
+        
+        Refinement Instructions:
+        ${refinementInstructions}
+        
+        Original Script:
+        ${customScript}
+        
+        Please provide an improved version that:
+        1. Addresses the specific refinement requests
+        2. Enhances clarity, engagement, and flow
+        3. Maintains the original intent and message
+        4. Improves structure and readability
+        5. Adds professional polish while preserving the user's voice
+        
+        Return the complete refined script.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const refinedScript = result.response.text();
+
+      return { script: refinedScript };
+    } catch (error) {
+      console.error("Error refining custom script:", error);
+      throw new Error("Failed to refine custom script");
+    }
+  },
+});
