@@ -19,9 +19,14 @@ export function cleanScriptForReading(script: string): string {
     
     // Skip empty lines
     if (!trimmedLine) continue;
-      // Skip timestamp patterns like [0:00], [0:15], [1:30], etc.
+    
+    // Skip markdown headings (##, #, ###, etc.) - these are titles, not spoken content
+    if (/^#{1,6}\s/.test(trimmedLine)) continue;
+    
+    // Skip timestamp patterns like [0:00], [0:15], [1:30], etc.
     if (/^\[\d+:\d+\]/.test(trimmedLine)) continue;
-      // Skip section headers with timestamps like **[0:00-0:15] Intro - Hook**
+    
+    // Skip section headers with timestamps like **[0:00-0:15] Intro - Hook**
     if (/^\*\*\[\d+:\d+[-\d:]*\].*\*\*$/.test(trimmedLine)) continue;
     
     // Skip malformed section headers (missing first asterisk)
@@ -64,8 +69,15 @@ export function cleanScriptForReading(script: string): string {
       .replace(/\([^)]*music[^)]*\)/gi, '')
       .replace(/\([^)]*sound[^)]*\)/gi, '')
       .replace(/\([^)]*audio[^)]*\)/gi, '')
-      .replace(/\([^)]*animation[^)]*\)/gi, '')      // Remove bullet points and dashes at the beginning (but not asterisks that are part of markdown)
+      .replace(/\([^)]*animation[^)]*\)/gi, '')
+      // Remove bullet points and dashes at the beginning (but not asterisks that are part of markdown)
       .replace(/^[•\-]\s*/, '') // Remove bullet points and dashes, but not asterisks
+      // Convert emphasis asterisks to quotes for better AI voiceover (*word* -> "word") 
+      .replace(/\*([^*]+)\*/g, '"$1"') // Replace *today* with "today"
+      // Replace dashes with commas for better AI voiceover flow (– becomes ,)
+      .replace(/\s*–\s*/g, ', ') // Replace em dash with comma and space
+      .replace(/\s*—\s*/g, ', ') // Replace long dash with comma and space
+      .replace(/\s*-\s*/g, ', ') // Replace regular dash with comma and space (when used mid-sentence)
       // Fix escaped quotes (we"re -> we're)
       .replace(/\\"/g, '"')
       .replace(/we"re/g, "we're")
@@ -93,6 +105,44 @@ export function cleanScriptForReading(script: string): string {
     cleanedLines.push(cleanedLine);
   }
   
-  // Join with single newlines to maintain natural reading flow
-  return cleanedLines.join('\n').trim();
+  // Add natural paragraph breaks for human-like formatting
+  const finalScript: string[] = [];
+  
+  for (let i = 0; i < cleanedLines.length; i++) {
+    const currentLine = cleanedLines[i];
+    const nextLine = cleanedLines[i + 1];
+    
+    finalScript.push(currentLine);
+    
+    // Add line breaks based on natural speech patterns
+    // Add break after questions
+    if (currentLine.endsWith('?')) {
+      finalScript.push('');
+    }
+    // Add break after exclamations for emphasis
+    else if (currentLine.endsWith('!') && currentLine.length > 50) {
+      finalScript.push('');
+    }
+    // Add break after long sentences (over 80 characters)
+    else if (currentLine.length > 80 && currentLine.endsWith('.')) {
+      finalScript.push('');
+    }
+    // Add break before transition words/phrases
+    else if (nextLine && /^(First|Next|Finally|Alright|And|So|Now|Here's|Listen|Look|Remember|Don't forget)/i.test(nextLine)) {
+      finalScript.push('');
+    }
+    // Add break before topic changes (lines that start with certain patterns)
+    else if (nextLine && /^(Bro,|Hey,|Listen,|Now,|Here's the thing|The key|The bottom line)/i.test(nextLine)) {
+      finalScript.push('');
+    }
+    // Random breaks for variety (every 2-4 lines, but not consecutive)
+    else if (i > 0 && i % 3 === 0 && Math.random() > 0.5 && 
+             finalScript[finalScript.length - 1] !== '' && 
+             currentLine.length > 30) {
+      finalScript.push('');
+    }
+  }
+  
+  // Clean up any triple line breaks
+  return finalScript.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
