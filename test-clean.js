@@ -1,41 +1,51 @@
-/**
- * Utility functions for script processing and cleaning
- */
+// Test the clean script function
+const testScript = `
+[0:00] Intro - Visual: Upbeat intro music, animated title card with playful graphics
 
-/**
- * Cleans a script by removing timestamps, symbols, and formatting for AI voice-over or natural reading
- * Preserves natural line breaks and spacing for human-like speech delivery
- * @param script - The original script content
- * @returns Clean, human-readable script ready for voiceover
- */
-export function cleanScriptForReading(script: string): string {
+Hey everyone! Welcome back to my channel.
+
+[0:15] - Today we're going to talk about something really exciting.
+
+**Visual**: Show screenshots of the product
+**Audio**: Background music fades
+
+• First point about the topic
+• Second important point  
+• Third key insight
+
+Speaker 1: This is really interesting stuff.
+
+(Visual cue: Animation shows the process)
+[Music swells]
+
+And that's exactly what we want to achieve here.
+
+Conclusion - Visual: Call to action graphics, subscribe button animation
+Thanks for watching, and I'll see you in the next video!
+`;
+
+// Copy the exact function from script-utils.ts
+function cleanScriptForReading(script) {
   if (!script) return '';
   
   const lines = script.split('\n');
-  const cleanedLines: string[] = [];
+  const cleanedLines = [];
   
   for (const line of lines) {
     const trimmedLine = line.trim();
     
     // Skip empty lines
     if (!trimmedLine) continue;
-      // Skip timestamp patterns like [0:00], [0:15], [1:30], etc.
+    
+    // Skip timestamp patterns like [0:00], [0:15], [1:30], etc.
     if (/^\[\d+:\d+\]/.test(trimmedLine)) continue;
-      // Skip section headers with timestamps like **[0:00-0:15] Intro - Hook**
-    if (/^\*\*\[\d+:\d+[-\d:]*\].*\*\*$/.test(trimmedLine)) continue;
-    
-    // Skip malformed section headers (missing first asterisk)
-    if (/^\*\[\d+:\d+[-\d:]*\].*\*\*$/.test(trimmedLine)) continue;
-    
-    // Skip any line that contains timestamp sections in brackets with asterisks
-    if (/^\*{1,2}\[[\d:-]+\].*\*{1,2}$/.test(trimmedLine)) continue;
     
     // Skip lines that start with section headers followed by visual/audio cues
     // Example: "Intro - Visual: Upbeat intro music, animated title card"
     if (/^[A-Za-z\s]+ - (Visual|Audio|Music|Sound|SFX):/i.test(trimmedLine)) continue;
     
-    // Skip lines that start with visual/production cues (be more specific)
-    if (/^(Visual|Audio|Music|Sound|SFX)\s*[-:]/.test(trimmedLine)) continue;
+    // Skip lines that start with visual/production cues
+    if (/^(Visual|Audio|Music|Sound|SFX|Intro|Outro|Conclusion)\s*[-:]/.test(trimmedLine)) continue;
     
     // Skip lines that contain mainly visual/audio instructions with **markers**
     if (/^\*\*(Visual|Audio|Music|Sound|SFX)\*\*:/i.test(trimmedLine)) continue;
@@ -64,8 +74,9 @@ export function cleanScriptForReading(script: string): string {
       .replace(/\([^)]*music[^)]*\)/gi, '')
       .replace(/\([^)]*sound[^)]*\)/gi, '')
       .replace(/\([^)]*audio[^)]*\)/gi, '')
-      .replace(/\([^)]*animation[^)]*\)/gi, '')      // Remove bullet points and dashes at the beginning (but not asterisks that are part of markdown)
-      .replace(/^[•\-]\s*/, '') // Remove bullet points and dashes, but not asterisks
+      .replace(/\([^)]*animation[^)]*\)/gi, '')
+      // Remove bullet points and dashes at the beginning
+      .replace(/^[•\-\*]\s*/, '')
       // Fix escaped quotes (we"re -> we're)
       .replace(/\\"/g, '"')
       .replace(/we"re/g, "we're")
@@ -90,9 +101,25 @@ export function cleanScriptForReading(script: string): string {
     if (/^(Visual|Audio|Music|Sound|SFX):/i.test(cleanedLine)) continue;
     if (/^(Show|Display|Cut to|Fade|Zoom|Pan):/i.test(cleanedLine)) continue;
     
-    cleanedLines.push(cleanedLine);
+    cleanedLines.push(cleanedLine);  
   }
   
   // Join with single newlines to maintain natural reading flow
   return cleanedLines.join('\n').trim();
 }
+
+console.log("ORIGINAL SCRIPT:");
+console.log("================");
+console.log(testScript);
+
+console.log("\n\nCLEANED SCRIPT:");
+console.log("===============");
+const result = cleanScriptForReading(testScript);
+console.log(result);
+
+console.log("\n\nANALYSIS:");
+console.log("=========");
+console.log("Number of lines in original:", testScript.split('\n').length);
+console.log("Number of lines in cleaned:", result.split('\n').length);
+console.log("Characters in original:", testScript.length);
+console.log("Characters in cleaned:", result.length);
