@@ -186,49 +186,55 @@ const analyzeStyle = useAction(api.youtube.analyzeStyle);
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentTranscripts.map((transcript) => (
-                <div
+              {recentTranscripts.map((transcript) => (                <div
                   key={transcript._id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                >                  <div className="space-y-1">
-                    <h3 className="font-medium">
-                      {transcript.metadata?.videoTitle || transcript.title || "Untitled Video"}
-                    </h3>
-                    {transcript.metadata?.channelName && (
-                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                        by {transcript.metadata.channelName}
-                      </p>
-                    )}
-                    <p className="text-sm text-muted-foreground">
-                      {transcript.youtubeUrl}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        transcript.status === 'completed' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
-                          : transcript.status === 'failed'
-                          ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                      }`}>
-                        {transcript.status}
-                      </span>
-                      {transcript.metadata?.createdAt && (
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(transcript.metadata.createdAt).toLocaleDateString()}
-                        </span>
+                  className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  {/* Desktop layout: flex items-center justify-between */}
+                  {/* Mobile layout: stacked */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h3 className="font-medium">
+                        {transcript.metadata?.videoTitle || transcript.title || "Untitled Video"}
+                      </h3>
+                      {transcript.metadata?.channelName && (
+                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                          by {transcript.metadata.channelName}
+                        </p>
                       )}
+                      <p className="text-sm text-muted-foreground truncate">
+                        {transcript.youtubeUrl}
+                      </p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          transcript.status === 'completed' 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+                            : transcript.status === 'failed'
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                        }`}>
+                          {transcript.status}
+                        </span>
+                        {transcript.metadata?.createdAt && (
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(transcript.metadata.createdAt).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
                     </div>
+                    {transcript.status === 'completed' && (
+                      <div className="flex-shrink-0">
+                        <Link 
+                          to={`/dashboard/youtube/generate?transcript=${transcript._id}`}
+                        >
+                          <Button size="sm" variant="outline" className="w-full sm:w-auto">
+                            Use This Style
+                            <ArrowRightIcon className="w-4 h-4 ml-2" />
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                  {transcript.status === 'completed' && (
-                    <Link 
-                      to={`/dashboard/youtube/generate?transcript=${transcript._id}`}
-                    >
-                      <Button size="sm" variant="outline">
-                        Use This Style
-                        <ArrowRightIcon className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
-                  )}
                 </div>
               ))}
             </div>
