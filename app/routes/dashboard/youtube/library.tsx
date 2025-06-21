@@ -173,11 +173,19 @@ export default function LibraryPage() {
             <div className="grid gap-4">
               {filteredTranscripts.map((transcript) => (
                 <Card key={transcript._id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
+                  <CardHeader>                    <div className="flex items-start justify-between">
                       <div className="space-y-2 flex-1">
                         <CardTitle className="text-lg">
-                          {transcript.title || "Untitled Video"}
+                          <div className="flex flex-col">
+                            <div className="truncate">
+                              {transcript.metadata?.videoTitle || transcript.title?.split(' | ')[0] || "Untitled Video"}
+                            </div>
+                            {transcript.metadata?.channelName && (
+                              <div className="hidden sm:block text-sm font-normal text-muted-foreground truncate">
+                                by {transcript.metadata.channelName}
+                              </div>
+                            )}
+                          </div>
                         </CardTitle>
                         <CardDescription className="flex items-center gap-2">
                           <CalendarIcon className="w-4 h-4" />

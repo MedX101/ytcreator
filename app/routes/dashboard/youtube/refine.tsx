@@ -38,9 +38,10 @@ import { cleanScriptForReading } from "~/lib/script-utils";
 // Function to format analysis text with proper structure
 const formatAnalysisText = (text: string) => {
   if (!text) return null;
-    // Split by double line breaks to get paragraphs, then clean up
+  
+  // Split by double line breaks to get paragraphs, then clean up
   const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0);
-  const elements: React.ReactNode[] = [];
+  const elements = [];
   
   paragraphs.forEach((paragraph, index) => {
     const trimmed = paragraph.trim();
@@ -308,10 +309,16 @@ export default function RefinePage() {
                 </SelectTrigger>                <SelectContent>
                   {completedTranscripts.map((transcript) => (
                     <SelectItem key={transcript._id} value={transcript._id}>
-                      <div className="flex-1 min-w-0">
-                        <div className="truncate pr-2">
+                      <div className="flex flex-col min-w-0 w-full">
+                        <div className="truncate text-sm">
                           {transcript.title || "Untitled Video"}
                         </div>
+                        {/* Hide channel info on small screens if it exists in metadata */}
+                        {transcript.metadata?.channelName && (
+                          <div className="hidden sm:block text-xs text-muted-foreground truncate">
+                            {transcript.metadata.channelName}
+                          </div>
+                        )}
                       </div>
                     </SelectItem>
                   ))}
@@ -623,10 +630,16 @@ export default function RefinePage() {
                       </SelectTrigger>                      <SelectContent>
                         {availableScripts.map((script) => (
                           <SelectItem key={script._id} value={script._id}>
-                            <div className="flex-1 min-w-0">
-                              <div className="truncate pr-2">
+                            <div className="flex flex-col min-w-0 w-full">
+                              <div className="truncate text-sm">
                                 {script.inputTitle || "Untitled Script"}
                               </div>
+                              {/* Hide any additional info on small screens if it exists */}
+                              {script.metadata?.type && (
+                                <div className="hidden sm:block text-xs text-muted-foreground truncate">
+                                  {script.metadata.type}
+                                </div>
+                              )}
                             </div>
                           </SelectItem>
                         ))}
