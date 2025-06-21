@@ -38,10 +38,9 @@ import { cleanScriptForReading } from "~/lib/script-utils";
 // Function to format analysis text with proper structure
 const formatAnalysisText = (text: string) => {
   if (!text) return null;
-  
-  // Split by double line breaks to get paragraphs, then clean up
+    // Split by double line breaks to get paragraphs, then clean up
   const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0);
-  const elements = [];
+  const elements: React.ReactNode[] = [];
   
   paragraphs.forEach((paragraph, index) => {
     const trimmed = paragraph.trim();
@@ -306,11 +305,14 @@ export default function RefinePage() {
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a transcribed video for style reference" />
-                </SelectTrigger>
-                <SelectContent>
+                </SelectTrigger>                <SelectContent>
                   {completedTranscripts.map((transcript) => (
                     <SelectItem key={transcript._id} value={transcript._id}>
-                      {transcript.title || "Untitled Video"}
+                      <div className="flex-1 min-w-0">
+                        <div className="truncate pr-2">
+                          {transcript.title || "Untitled Video"}
+                        </div>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -618,11 +620,14 @@ export default function RefinePage() {
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a script to refine" />
-                      </SelectTrigger>
-                      <SelectContent>
+                      </SelectTrigger>                      <SelectContent>
                         {availableScripts.map((script) => (
                           <SelectItem key={script._id} value={script._id}>
-                            {script.inputTitle || "Untitled Script"}
+                            <div className="flex-1 min-w-0">
+                              <div className="truncate pr-2">
+                                {script.inputTitle || "Untitled Script"}
+                              </div>
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
