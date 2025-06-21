@@ -47,9 +47,13 @@ export function cleanScriptForReading(script: string): string {
     
     // Skip lines that are purely visual/production instructions in parentheses
     if (/^\([^)]*\)$/.test(trimmedLine)) continue;
-    
-    // Skip lines that are purely visual/production instructions in brackets
+      // Skip lines that are purely visual/production instructions in brackets
     if (/^\[[^\]]*\]$/.test(trimmedLine)) continue;
+    
+    // Skip lines that contain VISUAL/ACTION instructions in brackets
+    if (/^\[VISUAL[^\]]*\]$/i.test(trimmedLine)) continue;
+    if (/^\[ACTION[^\]]*\]$/i.test(trimmedLine)) continue;
+    if (/^\[VISUAL\/ACTION[^\]]*\]$/i.test(trimmedLine)) continue;
     
     // Skip lines that are just music or sound cues
     if (/^\[.*music.*\]$/i.test(trimmedLine)) continue;
@@ -61,8 +65,7 @@ export function cleanScriptForReading(script: string): string {
       // Remove speaker labels like "Speaker 1:", "Host:", "Narrator:", etc.
       .replace(/^(Speaker \d+|Host|Narrator|Interviewer|Guest):\s*/i, '')
       // Remove **Visual** or **Audio** markers completely
-      .replace(/\*\*(Visual|Audio|Music|Sound|SFX)\*\*:\s*[^\n]*/gi, '')
-      // Remove visual cues in parentheses
+      .replace(/\*\*(Visual|Audio|Music|Sound|SFX)\*\*:\s*[^\n]*/gi, '')      // Remove visual cues in parentheses
       .replace(/\([^)]*visual[^)]*\)/gi, '')
       .replace(/\([^)]*Visual[^)]*\)/gi, '')
       // Remove production notes in parentheses
@@ -70,6 +73,10 @@ export function cleanScriptForReading(script: string): string {
       .replace(/\([^)]*sound[^)]*\)/gi, '')
       .replace(/\([^)]*audio[^)]*\)/gi, '')
       .replace(/\([^)]*animation[^)]*\)/gi, '')
+      // Remove VISUAL/ACTION cues in brackets
+      .replace(/\[VISUAL[^\]]*\]/gi, '') // Remove [VISUAL: ...]
+      .replace(/\[ACTION[^\]]*\]/gi, '') // Remove [ACTION: ...]
+      .replace(/\[VISUAL\/ACTION[^\]]*\]/gi, '') // Remove [VISUAL/ACTION: ...]
       // Remove bullet points and dashes at the beginning (but not asterisks that are part of markdown)
       .replace(/^[•\-]\s*/, '') // Remove bullet points and dashes, but not asterisks
       // Convert emphasis asterisks to quotes for better AI voiceover (*word* -> "word") 
